@@ -1,0 +1,24 @@
+{
+  "name": "@marketplace/common",
+  "version": "1.0.0",
+  "description": "Shared utilities, formatters, and validation helpers for the marketplace platform",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test test/common.test.js",
+    "clean": "node -e \"require('fs').rmSync('dist', { recursive: true, force: true })\""
+  },
+  "dependencies": {
+    "@marketplace/types": "*"
+  }
+}
