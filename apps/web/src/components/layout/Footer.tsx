@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 const footerLinks = {
   marketplace: {
-    title: 'Marketplace',
+    title: 'Sokudo',
     links: [
       { label: 'Tentang Kami', href: '/about' },
       { label: 'Karir', href: '/careers' },
@@ -14,19 +14,19 @@ const footerLinks = {
   beli: {
     title: 'Beli',
     links: [
-      { label: 'Cara Belanja', href: '/help/how-to-buy' },
-      { label: 'Pengiriman', href: '/help/shipping' },
-      { label: 'Pembayaran', href: '/help/payment' },
-      { label: 'Pengembalian', href: '/help/return' },
-      { label: 'Promo', href: '/promo' },
+      { label: 'Cara Belanja', href: '/help#cara-belanja' },
+      { label: 'Pengiriman', href: '/help#pengiriman' },
+      { label: 'Pembayaran', href: '/help#pembayaran' },
+      { label: 'Pengembalian', href: '/help#pengembalian' },
+      { label: 'Promo', href: '/products' },
     ],
   },
   jual: {
     title: 'Jual',
     links: [
       { label: 'Mulai Berjualan', href: '/seller' },
-      { label: 'Pusat Edukasi Seller', href: '/seller/education' },
-      { label: 'Kebijakan Seller', href: '/seller/policy' },
+      { label: 'Pusat Edukasi Seller', href: '/seller#edukasi' },
+      { label: 'Kebijakan Seller', href: '/terms#seller' },
     ],
   },
   bantuan: {
@@ -41,18 +41,39 @@ const footerLinks = {
 
 export function Footer() {
   return (
-    <footer className="border-t border-gray-200 bg-gray-50">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+    <footer className="mt-20 bg-ink text-paper">
+      <div className="mx-auto max-w-8xl px-4 py-14 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 gap-x-8 gap-y-10 md:grid-cols-[1.5fr_repeat(4,minmax(0,1fr))]">
+          <div className="col-span-2 md:col-span-1">
+            <Link href="/" className="flex items-baseline gap-2">
+              <span
+                className="h-2.5 w-2.5 translate-y-[-2px] bg-primary-500"
+                aria-hidden="true"
+              />
+              <span className="text-[22px] font-extrabold leading-none tracking-[-0.05em] text-paper">
+                sokudo
+              </span>
+            </Link>
+            <p className="mt-4 max-w-[34ch] text-[13px] leading-relaxed text-paper/55">
+              Marketplace multi-vendor dari toko-toko terverifikasi di
+              Indonesia. Satu checkout untuk semua pesanan.
+            </p>
+            <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.12em] text-paper/40">
+              Jakarta · halo@sokudo.id
+            </p>
+          </div>
+
           {Object.values(footerLinks).map((section) => (
             <div key={section.title}>
-              <h3 className="text-sm font-semibold text-gray-900">{section.title}</h3>
-              <ul className="mt-4 space-y-3">
+              <h3 className="font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-paper/40">
+                {section.title}
+              </h3>
+              <ul className="mt-4 space-y-2.5">
                 {section.links.map((link) => (
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-sm text-gray-600 transition-colors hover:text-primary-600"
+                      className="text-[13px] text-paper/70 underline-offset-4 transition-colors hover:text-paper hover:underline"
                     >
                       {link.label}
                     </Link>
@@ -63,18 +84,9 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="mt-12 border-t border-gray-200 pt-8">
-          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-            <div>
-              <h2 className="text-lg font-bold text-primary-600">Marketplace</h2>
-              <p className="mt-1 text-sm text-gray-500">
-                Platform belanja online terpercaya
-              </p>
-            </div>
-            <p className="text-sm text-gray-500">
-              &copy; {new Date().getFullYear()} Marketplace. Hak cipta dilindungi.
-            </p>
-          </div>
+        <div className="mt-12 flex flex-col gap-2 border-t border-paper/10 pt-6 font-mono text-[10px] uppercase tracking-[0.12em] text-paper/40 sm:flex-row sm:items-center sm:justify-between">
+          <p>&copy; {new Date().getFullYear()} Sokudo. Hak cipta dilindungi.</p>
+          <p>Pembayaran aman · Pengiriman terlacak</p>
         </div>
       </div>
     </footer>

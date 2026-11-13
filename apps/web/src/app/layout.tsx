@@ -1,15 +1,28 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { IBM_Plex_Mono, Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
+import { CartProvider } from '@/components/cart/CartProvider';
 
-const inter = Inter({ subsets: ['latin'] });
+const sans = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-sans',
+  display: 'swap',
+});
+
+const mono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-mono',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
-  title: 'Marketplace - Belanja Online Terpercaya',
+  title: 'Sokudo — Belanja lintas toko, satu checkout',
   description:
-    'Platform marketplace multi-vendor untuk jual beli produk berkualitas dari berbagai toko terpercaya.',
+    'Marketplace multi-vendor dari toko-toko terverifikasi di Indonesia. Elektronik, fashion, kesehatan, sampai kebutuhan rumah.',
 };
 
 export default function RootLayout({
@@ -18,13 +31,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id">
-      <body className={inter.className}>
-        <div className="flex min-h-screen flex-col">
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </div>
+    <html lang="id" className={`${sans.variable} ${mono.variable}`}>
+      <body className="font-sans">
+        <CartProvider>
+          <a
+            href="#main"
+            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-sm focus:border focus:border-ink focus:bg-surface focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
+          >
+            Lewati ke konten
+          </a>
+          <div className="flex min-h-screen flex-col">
+            <Navbar />
+            <main id="main" className="flex-1">
+              {children}
+            </main>
+            <Footer />
+          </div>
+        </CartProvider>
       </body>
     </html>
   );
