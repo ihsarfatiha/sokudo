@@ -1,14 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  CheckCircle2,
-  Loader2,
-  Package,
-  Search,
-  Truck,
-  Undo2,
-} from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
+import { CheckCircle2, Loader2, Package, Search, Truck, Undo2 } from 'lucide-react';
 import { API_URL } from '@/lib/api';
 
 interface TrackedOrder {
@@ -35,6 +29,7 @@ export function OrderTracker() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<TrackedOrder | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const reduce = useReducedMotion();
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -67,15 +62,12 @@ export function OrderTracker() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_300px] lg:gap-12">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
       <div>
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-2 sm:flex-row"
-        >
+        <form onSubmit={handleSubmit} className="card flex flex-col gap-2 p-3 sm:flex-row">
           <div className="relative flex-1">
             <Search
-              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-soft"
+              className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
               aria-hidden="true"
             />
             <input
@@ -83,10 +75,10 @@ export function OrderTracker() {
               onChange={(event) => setOrderNumber(event.target.value)}
               placeholder="Contoh: SKD-20260101-1234"
               aria-label="Nomor pesanan"
-              className="input-field pl-9"
+              className="input-field pl-10"
             />
           </div>
-          <button type="submit" disabled={loading} className="btn-primary">
+          <button type="submit" disabled={loading} className="btn-primary shrink-0">
             {loading ? (
               <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
             ) : (
@@ -99,87 +91,96 @@ export function OrderTracker() {
         {error && (
           <p
             role="alert"
-            className="mt-4 border-l-2 border-amber-600 bg-amber-50 px-4 py-3 text-[12.5px] leading-relaxed text-amber-900"
+            className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-800"
           >
             {error}
           </p>
         )}
 
         {result && (
-          <div className="mt-6 border border-line bg-surface">
-            <div className="flex items-center gap-2 border-b border-line px-5 py-3.5">
+          <motion.div
+            initial={reduce ? false : { opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="card mt-4 overflow-hidden"
+          >
+            <div className="flex items-center gap-2 border-b border-gray-100 px-5 py-3.5">
               <CheckCircle2
-                className="h-4 w-4 text-emerald-700"
-                strokeWidth={1.75}
+                className="h-4 w-4 text-emerald-600"
                 aria-hidden="true"
               />
-              <p className="num text-[13px] font-semibold">
+              <p className="text-sm font-semibold text-gray-900 tabular-nums">
                 {result.orderNumber}
               </p>
             </div>
-            <dl className="divide-y divide-line text-[13px]">
+            <dl className="divide-y divide-gray-100 text-sm">
               <div className="flex items-baseline justify-between px-5 py-3">
-                <dt className="text-ink-muted">Status</dt>
-                <dd className="font-medium text-emerald-800">
-                  {statusLabel[result.status] ?? result.status}
+                <dt className="text-gray-500">Status</dt>
+                <dd>
+                  <span className="badge-success">
+                    {statusLabel[result.status] ?? result.status}
+                  </span>
                 </dd>
               </div>
               {result.createdAt && (
                 <div className="flex items-baseline justify-between px-5 py-3">
-                  <dt className="text-ink-muted">Dibuat</dt>
-                  <dd className="num text-[12px]">
+                  <dt className="text-gray-500">Dibuat</dt>
+                  <dd className="text-xs tabular-nums text-gray-900">
                     {new Date(result.createdAt).toLocaleString('id-ID')}
                   </dd>
                 </div>
               )}
               {typeof result.itemCount === 'number' && (
                 <div className="flex items-baseline justify-between px-5 py-3">
-                  <dt className="text-ink-muted">Jumlah item</dt>
-                  <dd className="num">{result.itemCount}</dd>
+                  <dt className="text-gray-500">Jumlah item</dt>
+                  <dd className="tabular-nums text-gray-900">
+                    {result.itemCount}
+                  </dd>
                 </div>
               )}
             </dl>
-          </div>
+          </motion.div>
         )}
 
-        <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-soft">
-          Nomor pesanan ada di email konfirmasi dan halaman setelah checkout
+        <p className="mt-4 text-xs text-gray-500">
+          Nomor pesanan ada di email konfirmasi dan halaman setelah checkout.
         </p>
       </div>
 
       <aside className="h-fit">
-        <h2 className="label-mono">Butuh bantuan?</h2>
-        <ul className="mt-3 divide-y divide-line border-t border-line">
-          {[
-            {
-              icon: Package,
-              text: 'Pesanan diproses maksimal 1×24 jam setelah pembayaran diterima.',
-            },
-            {
-              icon: Truck,
-              text: 'Nomor resi dikirim lewat email dan muncul di halaman pesanan.',
-            },
-            {
-              icon: Undo2,
-              text: 'Pesanan tidak bergerak lebih dari 3 hari? Hubungi tim support.',
-            },
-          ].map((item) => {
-            const Icon = item.icon;
-            return (
-              <li
-                key={item.text}
-                className="flex items-start gap-2.5 py-3 text-[12.5px] leading-relaxed text-ink-muted"
-              >
-                <Icon
-                  className="mt-0.5 h-4 w-4 shrink-0 text-ink-soft"
-                  strokeWidth={1.5}
-                  aria-hidden="true"
-                />
-                {item.text}
-              </li>
-            );
-          })}
-        </ul>
+        <div className="card p-5">
+          <h2 className="text-sm font-semibold text-gray-900">Butuh bantuan?</h2>
+          <ul className="mt-3 divide-y divide-gray-100 border-t border-gray-100">
+            {[
+              {
+                icon: Package,
+                text: 'Pesanan diproses maksimal 1×24 jam setelah pembayaran diterima.',
+              },
+              {
+                icon: Truck,
+                text: 'Nomor resi dikirim lewat email dan muncul di halaman pesanan.',
+              },
+              {
+                icon: Undo2,
+                text: 'Pesanan tidak bergerak lebih dari 3 hari? Hubungi tim support.',
+              },
+            ].map((item) => {
+              const Icon = item.icon;
+              return (
+                <li
+                  key={item.text}
+                  className="flex items-start gap-2.5 py-3 text-xs leading-relaxed text-gray-600"
+                >
+                  <Icon
+                    className="mt-0.5 h-4 w-4 shrink-0 text-gray-400"
+                    aria-hidden="true"
+                  />
+                  {item.text}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </aside>
     </div>
   );

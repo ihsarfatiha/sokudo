@@ -4,17 +4,13 @@
 
 @layer base {
   :root {
-    --background: #f6f3ec;
-    --foreground: #17150f;
-    --muted: #f2ede3;
-    --muted-foreground: #6b6355;
-    --border: #e2dbcc;
-    --ring: #b93c1e;
-    --radius: 3px;
-  }
-
-  * {
-    border-color: var(--border);
+    --background: #ffffff;
+    --foreground: #0f172a;
+    --muted: #f8fafc;
+    --muted-foreground: #64748b;
+    --border: #e2e8f0;
+    --ring: #3b82f6;
+    --radius: 0.5rem;
   }
 
   html {
@@ -23,25 +19,21 @@
   }
 
   body {
-    @apply bg-paper text-ink antialiased;
+    @apply bg-[var(--background)] text-[var(--foreground)] antialiased;
     font-feature-settings: 'rlig' 1, 'calt' 1;
     text-rendering: optimizeLegibility;
   }
 
   h1,
   h2,
-  h3 {
-    @apply font-sans;
+  h3,
+  h4 {
     color: inherit;
-    letter-spacing: -0.02em;
-  }
-
-  h1 {
-    letter-spacing: -0.035em;
+    letter-spacing: -0.025em;
   }
 
   ::selection {
-    @apply bg-primary-200 text-ink;
+    @apply bg-primary-200 text-primary-950;
   }
 
   :focus-visible {
@@ -60,33 +52,66 @@
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
     }
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-sm border border-primary-700 bg-primary-600 px-5 py-3 text-sm font-semibold text-white transition-[background-color,transform,border-color] duration-150 ease-out hover:border-primary-800 hover:bg-primary-700 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white shadow-soft transition-[background-color,transform,box-shadow] duration-200 ease-out hover:bg-primary-700 hover:shadow-lift active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-sm border border-line bg-transparent px-5 py-3 text-sm font-semibold text-ink transition-[background-color,border-color,transform] duration-150 ease-out hover:border-ink/40 hover:bg-ink/[0.04] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition-[background-color,border-color,transform] duration-200 ease-out hover:border-gray-400 hover:bg-gray-50 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
   }
 
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-sm px-3 py-2 text-sm font-semibold text-ink transition-colors duration-150 hover:bg-ink/[0.05] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-gray-700 transition-colors duration-200 hover:bg-gray-100 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
   }
 
   .input-field {
-    @apply block w-full rounded-sm border border-line bg-surface px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-soft transition-colors duration-150 focus:border-ink/50 focus:outline-none focus:ring-2 focus:ring-primary-600/15 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply block w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition-[border-color,box-shadow] duration-200 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
-  .label-mono {
-    @apply font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-ink-soft;
+  .card {
+    @apply rounded-xl border border-gray-200 bg-white shadow-sm;
   }
 
-  .num {
-    @apply font-mono tabular-nums;
+  .card-hover {
+    @apply transition-[box-shadow,border-color] duration-300 ease-out hover:border-gray-300 hover:shadow-lift;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
+
+  .badge-primary {
+    @apply badge bg-primary-50 text-primary-700;
+  }
+
+  .badge-success {
+    @apply badge bg-emerald-50 text-emerald-700;
+  }
+
+  .badge-warning {
+    @apply badge bg-amber-50 text-amber-700;
+  }
+
+  .badge-danger {
+    @apply badge bg-red-50 text-red-700;
+  }
+
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.14em] text-primary-600;
+  }
+
+  .price {
+    @apply font-semibold tabular-nums tracking-tight text-gray-900;
+  }
+
+  .container-page {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
   }
 }
 
@@ -99,7 +124,16 @@
     text-wrap: pretty;
   }
 
-  .grain {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    background-size: 0% 1px;
+    transition: background-size 220ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .link-underline:hover,
+  .link-underline:focus-visible {
+    background-size: 100% 1px;
   }
 }

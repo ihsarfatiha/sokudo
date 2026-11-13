@@ -16,7 +16,7 @@ export default function LoginPage() {
           Belum punya akun?{' '}
           <Link
             href="/auth/register"
-            className="font-semibold text-ink underline decoration-line underline-offset-4 hover:decoration-ink"
+            className="font-semibold text-primary-600 underline-offset-4 hover:underline"
           >
             Daftar gratis
           </Link>

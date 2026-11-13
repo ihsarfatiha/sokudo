@@ -3,8 +3,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import {
   ArrowRight,
+  Check,
   CreditCard,
   Loader2,
   ShieldCheck,
@@ -14,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useCart } from '@/components/cart/CartProvider';
 import { ProductVisual } from '@/components/product/ProductVisual';
+import { styleForLine } from '@/lib/product-style';
 import { submitOrder } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
 
@@ -25,13 +28,14 @@ const couriers = [
 ];
 
 const paymentMethods = [
-  { value: 'transfer', label: 'Transfer bank', icon: Wallet },
-  { value: 'qris', label: 'QRIS', icon: CreditCard },
-  { value: 'cod', label: 'Bayar di tempat', icon: ShoppingBag },
+  { value: 'transfer', label: 'Transfer bank', note: 'BCA, BNI, Mandiri', icon: Wallet },
+  { value: 'qris', label: 'QRIS', note: 'Semua e-wallet', icon: CreditCard },
+  { value: 'cod', label: 'Bayar di tempat', note: 'COD kurir', icon: ShoppingBag },
 ];
 
 export function CheckoutForm() {
   const router = useRouter();
+  const reduce = useReducedMotion();
   const { items, subtotal, shippingFee, total, ready, clear } = useCart();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -39,24 +43,23 @@ export function CheckoutForm() {
 
   if (!ready) {
     return (
-      <div className="border border-line bg-surface px-6 py-16 text-center font-mono text-[11px] uppercase tracking-[0.12em] text-ink-soft">
-        Memuat checkout
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]">
+        <div className="card h-96 animate-pulse bg-gray-50" />
+        <div className="card h-72 animate-pulse bg-gray-50" />
       </div>
     );
   }
 
   if (items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center border border-line bg-surface px-6 py-20 text-center">
-        <ShoppingBag
-          className="h-8 w-8 text-ink-soft"
-          strokeWidth={1.25}
-          aria-hidden="true"
-        />
-        <h2 className="mt-4 text-lg font-bold tracking-[-0.02em]">
+      <div className="card flex flex-col items-center justify-center px-6 py-20 text-center">
+        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary-50 text-primary-600">
+          <ShoppingBag className="h-7 w-7" aria-hidden="true" />
+        </span>
+        <h2 className="mt-4 text-lg font-bold text-gray-900">
           Tidak ada produk untuk di-checkout
         </h2>
-        <p className="mt-1.5 max-w-[38ch] text-[13px] leading-relaxed text-ink-muted">
+        <p className="mt-1.5 max-w-sm text-sm leading-relaxed text-gray-600">
           Keranjang kamu kosong. Pilih produk dulu sebelum melanjutkan
           pembayaran.
         </p>
@@ -111,20 +114,27 @@ export function CheckoutForm() {
     }
   }
 
-  const fieldLabel = 'mb-1.5 block text-[12px] font-medium text-ink-muted';
+  const fieldLabel = 'mb-1.5 block text-xs font-semibold text-gray-700';
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_340px] lg:gap-12"
+      className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]"
     >
-      <div>
-        <section className="border-t border-ink pt-5">
-          <div className="flex items-baseline gap-3">
-            <span className="num text-[11px] text-ink-soft">01</span>
-            <h2 className="text-[15px] font-semibold tracking-[-0.01em]">
-              Informasi pembeli
-            </h2>
+      <div className="space-y-4">
+        <section className="card p-4 sm:p-6">
+          <div className="flex items-center gap-3">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-50 text-xs font-bold text-primary-700">
+              01
+            </span>
+            <div>
+              <h2 className="text-sm font-semibold text-gray-900">
+                Informasi pembeli
+              </h2>
+              <p className="text-[11px] text-gray-500">
+                Dipakai untuk konfirmasi pesanan.
+              </p>
+            </div>
           </div>
           <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
             <label className="block">
@@ -162,12 +172,19 @@ export function CheckoutForm() {
           </div>
         </section>
 
-        <section className="mt-8 border-t border-ink pt-5">
-          <div className="flex items-baseline gap-3">
-            <span className="num text-[11px] text-ink-soft">02</span>
-            <h2 className="text-[15px] font-semibold tracking-[-0.01em]">
-              Alamat pengiriman
-            </h2>
+        <section className="card p-4 sm:p-6">
+          <div className="flex items-center gap-3">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-50 text-xs font-bold text-primary-700">
+              02
+            </span>
+            <div>
+              <h2 className="text-sm font-semibold text-gray-900">
+                Alamat pengiriman
+              </h2>
+              <p className="text-[11px] text-gray-500">
+                Pastikan alamat lengkap agar kurir mudah menemukan.
+              </p>
+            </div>
           </div>
           <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
             <label className="block sm:col-span-2">
@@ -224,7 +241,7 @@ export function CheckoutForm() {
             <label className="block sm:col-span-2">
               <span className={fieldLabel}>
                 Catatan untuk penjual{' '}
-                <span className="text-ink-soft">(opsional)</span>
+                <span className="font-normal text-gray-400">(opsional)</span>
               </span>
               <textarea
                 name="notes"
@@ -236,127 +253,159 @@ export function CheckoutForm() {
           </div>
         </section>
 
-        <section className="mt-8 border-t border-ink pt-5">
-          <div className="flex items-baseline gap-3">
-            <span className="num text-[11px] text-ink-soft">03</span>
-            <h2 className="text-[15px] font-semibold tracking-[-0.01em]">
-              Metode pembayaran
-            </h2>
+        <section className="card p-4 sm:p-6">
+          <div className="flex items-center gap-3">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-50 text-xs font-bold text-primary-700">
+              03
+            </span>
+            <div>
+              <h2 className="text-sm font-semibold text-gray-900">
+                Metode pembayaran
+              </h2>
+              <p className="text-[11px] text-gray-500">
+                Instruksi dikirim setelah pesanan dibuat.
+              </p>
+            </div>
           </div>
+
           <div className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-3">
             {paymentMethods.map((method) => {
               const Icon = method.icon;
               const selected = payment === method.value;
               return (
-                <button
+                <motion.button
                   key={method.value}
                   type="button"
                   onClick={() => setPayment(method.value)}
                   aria-pressed={selected}
-                  className={`flex items-center gap-2.5 border px-3.5 py-3 text-left text-[13px] font-medium transition-[border-color,background-color,transform] duration-150 active:scale-[0.99] ${
+                  whileTap={reduce ? undefined : { scale: 0.98 }}
+                  className={`relative flex items-start gap-2.5 rounded-lg border p-3 text-left transition-[border-color,background-color,box-shadow] duration-200 ${
                     selected
-                      ? 'border-ink bg-ink text-paper'
-                      : 'border-line bg-surface text-ink-muted hover:border-ink/40 hover:text-ink'
+                      ? 'border-primary-600 bg-primary-50 shadow-sm'
+                      : 'border-gray-200 bg-white hover:border-primary-200 hover:bg-gray-50'
                   }`}
                 >
                   <Icon
-                    className="h-4 w-4 shrink-0"
-                    strokeWidth={1.5}
+                    className={`mt-0.5 h-4 w-4 shrink-0 ${
+                      selected ? 'text-primary-600' : 'text-gray-400'
+                    }`}
                     aria-hidden="true"
                   />
-                  {method.label}
-                </button>
+                  <span className="min-w-0">
+                    <span className="block text-xs font-semibold text-gray-900">
+                      {method.label}
+                    </span>
+                    <span className="mt-0.5 block text-[11px] text-gray-500">
+                      {method.note}
+                    </span>
+                  </span>
+                  <AnimatePresence initial={false}>
+                    {selected && (
+                      <motion.span
+                        key="check"
+                        initial={reduce ? false : { scale: 0.4, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={reduce ? { opacity: 0 } : { scale: 0.4, opacity: 0 }}
+                        transition={{ type: 'spring', stiffness: 500, damping: 28 }}
+                        className="absolute right-2 top-2 flex h-4 w-4 items-center justify-center rounded-full bg-primary-600 text-white"
+                      >
+                        <Check className="h-2.5 w-2.5" aria-hidden="true" />
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                </motion.button>
               );
             })}
           </div>
-          <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-soft">
-            Instruksi pembayaran dikirim setelah pesanan dibuat
-          </p>
         </section>
       </div>
 
-      <aside className="h-fit lg:sticky lg:top-40">
-        <div className="border border-line bg-surface">
-          <div className="flex items-baseline justify-between border-b border-line px-5 py-4">
-            <h2 className="text-[13px] font-semibold">Pesanan kamu</h2>
-            <span className="num text-[11px] text-ink-soft">
-              {items.length} item
-            </span>
+      <aside className="h-fit lg:sticky lg:top-36">
+        <div className="card overflow-hidden">
+          <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
+            <h2 className="text-sm font-semibold text-gray-900">
+              Pesanan kamu
+            </h2>
+            <span className="text-xs text-gray-500">{items.length} produk</span>
           </div>
 
-          <ul className="divide-y divide-line px-5">
-            {items.map((line) => (
-              <li key={line.productId} className="flex items-center gap-3 py-3">
-                <ProductVisual
-                  slug={line.slug}
-                  categorySlug={line.categorySlug}
-                  className="h-12 w-12 shrink-0"
-                  iconClassName="h-5 w-5"
-                />
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-[12.5px] font-medium">
-                    {line.title}
-                  </p>
-                  <p className="num mt-0.5 text-[11px] text-ink-soft">
-                    {line.quantity} × {formatCurrency(line.price)}
-                  </p>
-                </div>
-                <span className="num text-[12px] font-semibold">
-                  {formatCurrency(line.price * line.quantity)}
-                </span>
-              </li>
-            ))}
+          <ul className="max-h-72 divide-y divide-gray-100 overflow-y-auto px-5">
+            {items.map((line) => {
+              const style = styleForLine(line.slug, line.categorySlug);
+              return (
+                <li key={line.productId} className="flex items-center gap-3 py-3">
+                  <ProductVisual
+                    emoji={style.emoji}
+                    gradient={style.gradient}
+                    className="h-12 w-12 shrink-0 rounded-lg"
+                    emojiClassName="text-xl"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-xs font-semibold text-gray-900">
+                      {line.title}
+                    </p>
+                    <p className="mt-0.5 text-[11px] text-gray-500 tabular-nums">
+                      {line.quantity} × {formatCurrency(line.price)}
+                    </p>
+                  </div>
+                  <span className="shrink-0 text-xs font-semibold tabular-nums text-gray-900">
+                    {formatCurrency(line.price * line.quantity)}
+                  </span>
+                </li>
+              );
+            })}
           </ul>
 
-          <dl className="space-y-2.5 border-t border-line px-5 py-4 text-[13px]">
-            <div className="flex items-baseline justify-between text-ink-muted">
+          <dl className="space-y-2.5 border-t border-gray-100 px-5 py-4 text-sm">
+            <div className="flex items-baseline justify-between text-gray-500">
               <dt>Subtotal</dt>
-              <dd className="num text-ink">{formatCurrency(subtotal)}</dd>
+              <dd className="tabular-nums text-gray-900">
+                {formatCurrency(subtotal)}
+              </dd>
             </div>
-            <div className="flex items-baseline justify-between text-ink-muted">
+            <div className="flex items-baseline justify-between text-gray-500">
               <dt className="flex items-center gap-1.5">
-                <Truck
-                  className="h-3.5 w-3.5"
-                  strokeWidth={1.5}
-                  aria-hidden="true"
-                />
+                <Truck className="h-3.5 w-3.5" aria-hidden="true" />
                 Ongkir
               </dt>
-              <dd className="num text-ink">
+              <dd className="tabular-nums">
                 {shippingFee === 0 ? (
-                  <span className="text-emerald-800">Gratis</span>
+                  <span className="font-medium text-emerald-600">Gratis</span>
                 ) : (
-                  formatCurrency(shippingFee)
+                  <span className="text-gray-900">
+                    {formatCurrency(shippingFee)}
+                  </span>
                 )}
               </dd>
             </div>
-            <div className="flex items-baseline justify-between border-t border-dashed border-line pt-3">
-              <dt className="text-sm font-semibold">Total bayar</dt>
-              <dd className="num text-base font-semibold">
+            <div className="flex items-baseline justify-between border-t border-gray-100 pt-3">
+              <dt className="font-semibold text-gray-900">Total bayar</dt>
+              <dd className="text-lg font-bold tabular-nums text-gray-900">
                 {formatCurrency(total)}
               </dd>
             </div>
           </dl>
 
-          <div className="border-t border-line px-5 py-4">
+          <div className="border-t border-gray-100 px-5 py-4">
             {error && (
               <p
                 role="alert"
-                className="mb-3 border-l-2 border-red-600 bg-red-50 px-3 py-2 text-[12px] leading-relaxed text-red-800"
+                className="mb-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs leading-relaxed text-red-700"
               >
                 {error}
               </p>
             )}
 
-            <button
+            <motion.button
               type="submit"
               disabled={loading}
+              whileTap={reduce || loading ? undefined : { scale: 0.99 }}
               className="btn-primary w-full"
             >
               {loading ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                  Memproses
+                  Memproses pesanan
                 </>
               ) : (
                 <>
@@ -364,12 +413,11 @@ export function CheckoutForm() {
                   <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </>
               )}
-            </button>
+            </motion.button>
 
-            <p className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-ink-soft">
+            <p className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-gray-500">
               <ShieldCheck
-                className="h-3.5 w-3.5 text-emerald-700"
-                strokeWidth={1.5}
+                className="h-3.5 w-3.5 text-emerald-600"
                 aria-hidden="true"
               />
               Data kamu tidak dibagikan ke pihak ketiga

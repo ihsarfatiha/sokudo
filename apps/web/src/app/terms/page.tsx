@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { FileText } from 'lucide-react';
+import { FileText, Mail } from 'lucide-react';
 
 export const metadata = {
   title: 'Syarat & Ketentuan — Sokudo',
@@ -77,102 +77,114 @@ const sections = [
 
 export default function TermsPage() {
   return (
-    <div className="mx-auto max-w-8xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
-      <nav
-        className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.12em] text-ink-soft"
-        aria-label="Breadcrumb"
-      >
-        <Link href="/" className="transition-colors hover:text-ink">
-          Beranda
-        </Link>
-        <span aria-hidden="true">/</span>
-        <span className="text-ink-muted">Syarat dan ketentuan</span>
-      </nav>
+    <div className="bg-gray-50/60">
+      <div className="border-b border-gray-100 bg-white">
+        <div className="container-page py-8 lg:py-10">
+          <nav
+            className="flex items-center gap-1.5 text-xs text-gray-500"
+            aria-label="Breadcrumb"
+          >
+            <Link href="/" className="transition-colors hover:text-primary-600">
+              Beranda
+            </Link>
+            <span aria-hidden="true">/</span>
+            <span className="font-medium text-gray-900">
+              Syarat dan ketentuan
+            </span>
+          </nav>
 
-      <header className="mt-8 grid grid-cols-1 gap-6 border-b border-line pb-8 lg:grid-cols-12">
-        <div className="lg:col-span-8">
-          <div className="flex items-center gap-2">
-            <FileText
-              className="h-4 w-4 text-ink-soft"
-              strokeWidth={1.5}
-              aria-hidden="true"
-            />
-            <p className="label-mono">Dokumen legal</p>
+          <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-12">
+            <div className="lg:col-span-8">
+              <p className="inline-flex items-center gap-1.5 rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-700">
+                <FileText className="h-3.5 w-3.5" aria-hidden="true" />
+                Dokumen legal
+              </p>
+              <h1 className="mt-3 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+                Syarat dan ketentuan
+              </h1>
+              <p className="mt-2 max-w-[58ch] text-sm leading-relaxed text-gray-600">
+                Berlaku untuk pembeli dan penjual di platform Sokudo. Dengan
+                menggunakan layanan, kamu menyetujui ketentuan di bawah ini.
+              </p>
+            </div>
+            <div className="lg:col-span-4 lg:text-right">
+              <p className="text-[11px] font-medium uppercase tracking-wide text-gray-400">
+                Terakhir diperbarui
+              </p>
+              <p className="mt-1 text-sm font-semibold text-gray-900">{updated}</p>
+            </div>
           </div>
-          <h1 className="mt-4 text-3xl font-extrabold tracking-[-0.04em] sm:text-4xl">
-            Syarat dan ketentuan
-          </h1>
-          <p className="mt-3 max-w-[58ch] text-[13.5px] leading-relaxed text-ink-muted">
-            Berlaku untuk pembeli dan penjual di platform Sokudo. Dengan
-            menggunakan layanan, kamu menyetujui ketentuan di bawah ini.
-          </p>
         </div>
-        <div className="lg:col-span-4 lg:text-right">
-          <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-ink-soft">
-            Terakhir diperbarui
-          </p>
-          <p className="num mt-1 text-[13px]">{updated}</p>
-        </div>
-      </header>
+      </div>
 
-      <div className="mt-8 grid grid-cols-1 gap-10 lg:grid-cols-[200px_1fr] lg:gap-14">
-        <nav className="h-fit lg:sticky lg:top-40" aria-label="Daftar bagian">
-          <p className="label-mono">Isi dokumen</p>
-          <ol className="mt-3 space-y-1.5 border-t border-line pt-3">
-            {sections.map((section, index) => (
-              <li key={section.id}>
-                <a
-                  href={`#${section.id}`}
-                  className="flex items-baseline gap-2 text-[12px] leading-relaxed text-ink-muted transition-colors hover:text-ink"
-                >
-                  <span className="num text-[10px] text-ink-soft">
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
-                  {section.title}
-                </a>
-              </li>
-            ))}
-          </ol>
-        </nav>
-
-        <div className="max-w-[68ch]">
-          {sections.map((section, index) => (
-            <section
-              key={section.id}
-              id={section.id}
-              className="scroll-mt-40 border-t border-line py-6 first:border-t-0 first:pt-0"
-            >
-              <div className="flex items-baseline gap-3">
-                <span className="num text-[10px] text-ink-soft">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <h2 className="text-[16px] font-bold tracking-[-0.015em]">
-                  {section.title}
-                </h2>
-              </div>
-              <ul className="mt-3 space-y-2 pl-7">
-                {section.body.map((item) => (
-                  <li
-                    key={item}
-                    className="text-[13px] leading-relaxed text-ink-muted"
+      <div className="container-page py-8 lg:py-10">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[220px_1fr]">
+          <nav
+            className="card h-fit p-4 lg:sticky lg:top-36"
+            aria-label="Daftar bagian"
+          >
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-400">
+              Isi dokumen
+            </p>
+            <ol className="mt-3 space-y-1">
+              {sections.map((section, index) => (
+                <li key={section.id}>
+                  <a
+                    href={`#${section.id}`}
+                    className="flex items-baseline gap-2 rounded-md px-2 py-1.5 text-xs leading-relaxed text-gray-600 transition-colors hover:bg-primary-50 hover:text-primary-700"
                   >
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))}
+                    <span className="text-[10px] font-semibold text-gray-400">
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
+                    {section.title}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
 
-          <p className="mt-6 border-t border-line pt-5 text-[12.5px] leading-relaxed text-ink-muted">
-            Ada pertanyaan soal ketentuan ini? Kirim email ke{' '}
-            <a
-              href="mailto:legal@sokudo.id"
-              className="font-semibold text-ink underline decoration-line underline-offset-4 hover:decoration-ink"
-            >
-              legal@sokudo.id
-            </a>
-            .
-          </p>
+          <div className="max-w-[70ch]">
+            <div className="card p-5 sm:p-7">
+              {sections.map((section, index) => (
+                <section
+                  key={section.id}
+                  id={section.id}
+                  className="scroll-mt-36 border-t border-gray-100 py-6 first:border-t-0 first:pt-0 last:pb-0"
+                >
+                  <div className="flex items-baseline gap-3">
+                    <span className="text-xs font-bold text-primary-600">
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
+                    <h2 className="text-base font-bold tracking-tight text-gray-900">
+                      {section.title}
+                    </h2>
+                  </div>
+                  <ul className="mt-3 space-y-2 pl-7">
+                    {section.body.map((item) => (
+                      <li
+                        key={item}
+                        className="text-sm leading-relaxed text-gray-600"
+                      >
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              ))}
+            </div>
+
+            <p className="mt-4 flex flex-wrap items-center gap-1.5 text-xs leading-relaxed text-gray-600">
+              Ada pertanyaan soal ketentuan ini? Kirim email ke
+              <a
+                href="mailto:legal@sokudo.id"
+                className="inline-flex items-center gap-1 font-semibold text-primary-600 underline-offset-4 hover:underline"
+              >
+                <Mail className="h-3.5 w-3.5" aria-hidden="true" />
+                legal@sokudo.id
+              </a>
+              .
+            </p>
+          </div>
         </div>
       </div>
     </div>

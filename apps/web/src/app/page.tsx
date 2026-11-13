@@ -1,8 +1,21 @@
 import Link from 'next/link';
-import { ArrowUpRight, Search } from 'lucide-react';
+import {
+  ArrowRight,
+  BadgeCheck,
+  ChevronRight,
+  Flame,
+  RotateCcw,
+  Search,
+  ShieldCheck,
+  Sparkles,
+  Store,
+  Truck,
+  Zap,
+} from 'lucide-react';
 import { getCategories, getProducts } from '@/lib/api';
 import { ProductCard } from '@/components/product/ProductCard';
 import { ProductVisual } from '@/components/product/ProductVisual';
+import { FlashSaleCountdown } from '@/components/home/FlashSaleCountdown';
 import { formatCurrency } from '@/lib/utils';
 
 export default async function HomePage() {
@@ -12,175 +25,256 @@ export default async function HomePage() {
   ]);
 
   const flashSale = products.filter((product) => product.isFlashSale).slice(0, 3);
-  const receiptItems = products.slice(0, 2);
-  const receiptTotal = receiptItems.reduce((sum, item) => sum + item.price, 0);
-  const receiptStores = new Set(receiptItems.map((item) => item.store.id)).size;
+  const featured = products.slice(0, 8);
+  const heroItems = products.slice(0, 2);
+  const heroTotal = heroItems.reduce((sum, item) => sum + item.price, 0);
+  const heroStores = new Set(heroItems.map((item) => item.store.id)).size;
 
   return (
     <div>
       {/* Hero */}
-      <section className="border-b border-line">
-        <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 gap-14 py-12 lg:grid-cols-12 lg:gap-10 lg:py-20">
-            <div className="lg:col-span-7 lg:pr-8">
-              <p className="label-mono">
-                Marketplace multi-vendor · {categories.length} kategori
-              </p>
+      <section className="relative overflow-hidden border-b border-gray-100 bg-gradient-to-br from-primary-50 via-white to-indigo-50">
+        <div
+          className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-primary-200/40 blur-3xl"
+          aria-hidden="true"
+        />
+        <div
+          className="pointer-events-none absolute -bottom-32 -left-24 h-80 w-80 rounded-full bg-indigo-200/40 blur-3xl"
+          aria-hidden="true"
+        />
 
-              <h1 className="mt-5 text-balance text-[clamp(2.5rem,6vw,4.5rem)] font-extrabold leading-[0.94] tracking-[-0.045em]">
-                Banyak toko.
-                <br />
-                Satu checkout.
-              </h1>
+        <div className="container-page relative grid grid-cols-1 items-center gap-12 py-12 lg:grid-cols-12 lg:py-20">
+          <div className="lg:col-span-6">
+            <p className="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-white/70 px-3 py-1 text-xs font-semibold text-primary-700 backdrop-blur">
+              <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
+              Marketplace multi-vendor · {categories.length} kategori
+            </p>
 
-              <p className="mt-6 max-w-[46ch] text-pretty text-[15px] leading-relaxed text-ink-muted">
-                Belanja elektronik, fashion, kopi, sampai perlengkapan rumah dari
-                seller terverifikasi. Satu keranjang, satu pembayaran, satu
-                pelacakan.
-              </p>
+            <h1 className="mt-5 text-balance text-4xl font-extrabold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl lg:text-[3.4rem]">
+              Belanja dari banyak toko,{' '}
+              <span className="text-primary-600">bayar sekali.</span>
+            </h1>
 
-              <form
-                action="/products"
-                role="search"
-                className="mt-8 flex max-w-xl items-stretch border border-ink/80 bg-surface"
+            <p className="mt-5 max-w-[46ch] text-pretty text-base leading-relaxed text-gray-600">
+              Elektronik, fashion, kopi, sampai perlengkapan rumah dari seller
+              terverifikasi. Satu keranjang, satu pembayaran, satu pelacakan.
+            </p>
+
+            <form
+              action="/products"
+              role="search"
+              className="group mt-7 flex max-w-xl items-center rounded-xl border border-gray-200 bg-white p-1.5 shadow-soft transition-shadow duration-300 focus-within:border-primary-300 focus-within:shadow-lift"
+            >
+              <Search
+                className="ml-2.5 h-5 w-5 shrink-0 text-gray-400 transition-colors group-focus-within:text-primary-600"
+                aria-hidden="true"
+              />
+              <input
+                type="search"
+                name="q"
+                placeholder="Cari produk, toko, atau kategori"
+                aria-label="Cari produk, toko, atau kategori"
+                className="w-full bg-transparent px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none"
+              />
+              <button
+                type="submit"
+                className="btn-primary shrink-0 !rounded-lg !px-5 active:scale-95"
               >
-                <Search
-                  className="ml-4 h-4 w-4 shrink-0 self-center text-ink-soft"
-                  aria-hidden="true"
-                />
-                <input
-                  type="search"
-                  name="q"
-                  placeholder="Cari produk atau toko"
-                  aria-label="Cari produk atau toko"
-                  className="w-full bg-transparent px-3 py-3.5 text-sm text-ink placeholder:text-ink-soft focus:outline-none"
-                />
-                <button
-                  type="submit"
-                  className="shrink-0 bg-ink px-6 font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-paper transition-colors hover:bg-ink/85 active:scale-[0.99]"
-                >
-                  Cari
-                </button>
-              </form>
+                Cari
+              </button>
+            </form>
 
-              <dl className="mt-8 grid max-w-xl grid-cols-3 gap-4 border-t border-line pt-5">
-                <div>
-                  <dt className="label-mono">Toko</dt>
-                  <dd className="num mt-1.5 text-[13px] font-semibold">
-                    7 terverifikasi
-                  </dd>
-                </div>
-                <div>
-                  <dt className="label-mono">Gratis ongkir</dt>
-                  <dd className="num mt-1.5 text-[13px] font-semibold">
-                    ≥ Rp300.000
-                  </dd>
-                </div>
-                <div>
-                  <dt className="label-mono">Pengembalian</dt>
-                  <dd className="num mt-1.5 text-[13px] font-semibold">
-                    7 hari
-                  </dd>
-                </div>
-              </dl>
-            </div>
+            <dl className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-gray-600">
+              <div className="flex items-center gap-1.5">
+                <BadgeCheck className="h-4 w-4 text-primary-600" aria-hidden="true" />
+                <dt className="sr-only">Toko</dt>
+                <dd className="font-medium">7 toko terverifikasi</dd>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Truck className="h-4 w-4 text-primary-600" aria-hidden="true" />
+                <dt className="sr-only">Ongkir</dt>
+                <dd className="font-medium">Gratis ongkir ≥ Rp300.000</dd>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <RotateCcw className="h-4 w-4 text-primary-600" aria-hidden="true" />
+                <dt className="sr-only">Pengembalian</dt>
+                <dd className="font-medium">Pengembalian 7 hari</dd>
+              </div>
+            </dl>
+          </div>
 
-            <div className="lg:col-span-5">
-              <div className="relative mx-auto max-w-[360px] lg:mt-4">
-                <div
-                  className="absolute inset-0 translate-x-3 translate-y-3 rounded-sm bg-primary-600"
-                  aria-hidden="true"
-                />
-                <div className="relative rotate-[-1.2deg] rounded-sm border border-line bg-surface p-6 shadow-lift">
-                  <div className="flex items-baseline justify-between border-b border-dashed border-line pb-4">
-                    <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-soft">
-                      Ringkasan pesanan
-                    </span>
-                    <span className="num text-[10px] text-ink-soft">
-                      #SKD-4471
-                    </span>
-                  </div>
+          <div className="lg:col-span-6">
+            <div className="relative mx-auto mt-6 max-w-md pb-6 sm:mt-4 sm:pb-0">
+              <div className="absolute -right-1 -top-12 z-10 rounded-xl border border-emerald-200 bg-white px-3 py-2 shadow-soft">
+                <p className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-700">
+                  <Truck className="h-3.5 w-3.5" aria-hidden="true" />
+                  Gratis ongkir
+                </p>
+                <p className="mt-0.5 text-[10px] text-gray-500">
+                  Pesanan ≥ Rp300.000
+                </p>
+              </div>
 
-                  <ul className="divide-y divide-line/70">
-                    {receiptItems.map((item) => (
-                      <li
-                        key={item.id}
-                        className="flex items-start justify-between gap-4 py-3"
-                      >
-                        <span className="line-clamp-2 text-[12px] leading-snug text-ink-muted">
+              <div className="absolute -bottom-6 -left-1 z-10 rounded-xl border border-gray-200 bg-white px-3 py-2 shadow-soft">
+                <p className="flex items-center gap-1.5 text-[11px] font-semibold text-gray-900">
+                  <ShieldCheck
+                    className="h-3.5 w-3.5 text-primary-600"
+                    aria-hidden="true"
+                  />
+                  Pembayaran aman
+                </p>
+                <p className="mt-0.5 text-[10px] text-gray-500">
+                  Transfer · QRIS · COD
+                </p>
+              </div>
+
+              <div className="card overflow-hidden p-5">
+                <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+                  <p className="text-sm font-semibold text-gray-900">
+                    Ringkasan pesanan
+                  </p>
+                  <span className="badge-primary">
+                    {heroStores} toko
+                  </span>
+                </div>
+
+                <ul className="divide-y divide-gray-100">
+                  {heroItems.map((item) => (
+                    <li key={item.id} className="flex items-center gap-3 py-3">
+                      <ProductVisual
+                        emoji={item.emoji}
+                        gradient={item.gradient}
+                        className="h-11 w-11 shrink-0 rounded-lg"
+                        emojiClassName="text-xl"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-xs font-semibold text-gray-900">
                           {item.title}
-                        </span>
-                        <span className="num shrink-0 text-[12px] font-medium">
-                          {formatCurrency(item.price)}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
+                        </p>
+                        <p className="mt-0.5 text-[11px] text-gray-500">
+                          {item.store.name}
+                        </p>
+                      </div>
+                      <span className="shrink-0 text-xs font-semibold tabular-nums text-gray-900">
+                        {formatCurrency(item.price)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
 
-                  <dl className="space-y-1.5 border-t border-dashed border-line pt-3 text-[12px]">
-                    <div className="flex justify-between text-ink-muted">
-                      <dt>Subtotal</dt>
-                      <dd className="num">{formatCurrency(receiptTotal)}</dd>
-                    </div>
-                    <div className="flex justify-between text-ink-muted">
-                      <dt>Ongkir</dt>
-                      <dd className="num">Gratis</dd>
-                    </div>
-                    <div className="flex items-baseline justify-between pt-2 text-[13px] font-semibold">
-                      <dt>Total</dt>
-                      <dd className="num text-base">
-                        {formatCurrency(receiptTotal)}
-                      </dd>
-                    </div>
-                  </dl>
-
-                  <div className="mt-5 flex items-center justify-between border-t border-line pt-4">
-                    <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-ink-soft">
-                      {receiptStores} toko · 1 pembayaran
-                    </span>
-                    <span className="rounded-sm border border-emerald-700/40 px-2 py-1 font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-emerald-800">
-                      Lunas
-                    </span>
+                <dl className="mt-1 space-y-1.5 border-t border-dashed border-gray-200 pt-3 text-xs">
+                  <div className="flex justify-between text-gray-500">
+                    <dt>Subtotal</dt>
+                    <dd className="tabular-nums">{formatCurrency(heroTotal)}</dd>
                   </div>
+                  <div className="flex justify-between text-gray-500">
+                    <dt>Ongkir</dt>
+                    <dd className="font-medium text-emerald-600">Gratis</dd>
+                  </div>
+                  <div className="flex justify-between pt-1 text-sm font-bold text-gray-900">
+                    <dt>Total</dt>
+                    <dd className="tabular-nums">{formatCurrency(heroTotal)}</dd>
+                  </div>
+                </dl>
+
+                <div className="mt-4 flex items-center gap-2 rounded-lg bg-primary-50 px-3 py-2 text-[11px] text-primary-800">
+                  <Zap className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                  Satu checkout untuk semua toko
                 </div>
               </div>
-              <p className="mt-6 text-center font-mono text-[10px] uppercase tracking-[0.12em] text-ink-soft lg:text-left">
-                Contoh ringkasan checkout lintas toko
-              </p>
             </div>
           </div>
         </div>
       </section>
 
+      {/* Trust strip */}
+      <section className="border-b border-gray-100 bg-white">
+        <div className="container-page grid grid-cols-2 divide-x divide-gray-100 py-6 sm:grid-cols-4">
+          {[
+            {
+              icon: BadgeCheck,
+              title: 'Seller terverifikasi',
+              text: 'Dokumen diperiksa admin',
+            },
+            {
+              icon: Truck,
+              title: 'Pengiriman terlacak',
+              text: 'Status sampai diterima',
+            },
+            {
+              icon: ShieldCheck,
+              title: 'Pembayaran aman',
+              text: 'Transfer, QRIS, dan COD',
+            },
+            {
+              icon: RotateCcw,
+              title: 'Pengembalian mudah',
+              text: 'Ajukan dalam 7 hari',
+            },
+          ].map((item) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={item.title}
+                className="flex items-center gap-3 px-3 py-2 first:pl-0 sm:px-5"
+              >
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary-50 text-primary-600">
+                  <Icon className="h-4 w-4" aria-hidden="true" />
+                </span>
+                <div>
+                  <p className="text-xs font-semibold text-gray-900">
+                    {item.title}
+                  </p>
+                  <p className="mt-0.5 text-[11px] text-gray-500">{item.text}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
       {/* Categories */}
-      <section className="mx-auto max-w-8xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-        <div className="flex items-end justify-between gap-4">
-          <h2 className="text-xl font-bold tracking-[-0.02em] sm:text-2xl">
-            Kategori
-          </h2>
+      <section className="container-page py-12 lg:py-16">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="eyebrow">Kategori</p>
+            <h2 className="mt-2 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+              Mau cari apa hari ini?
+            </h2>
+          </div>
           <Link
             href="/products"
-            className="group inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-muted transition-colors hover:text-ink"
+            className="group inline-flex items-center gap-1 text-sm font-semibold text-primary-600 hover:text-primary-700"
           >
-            Semua produk
-            <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            Lihat semua produk
+            <ChevronRight
+              className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
+              aria-hidden="true"
+            />
           </Link>
         </div>
 
-        <div className="mt-5 grid grid-cols-2 border-t border-line sm:grid-cols-4">
-          {categories.map((category, index) => (
+        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {categories.map((category) => (
             <Link
               key={category.slug}
               href={`/products?category=${category.slug}`}
-              className="group flex items-center gap-3 border-b border-line py-4 pr-4 transition-colors hover:bg-surface sm:px-4"
+              className="group card flex items-center gap-3 p-4 transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-1 hover:border-primary-200 hover:shadow-lift"
             >
-              <span className="num text-[10px] text-ink-soft">
-                {String(index + 1).padStart(2, '0')}
+              <span
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gray-50 text-2xl transition-transform duration-300 group-hover:scale-110 sm:h-11 sm:w-11"
+                aria-hidden="true"
+              >
+                {category.icon}
               </span>
-              <span className="flex-1 text-sm font-medium text-ink">
-                {category.name}
+              <span className="min-w-0">
+                <span className="block text-[13px] font-semibold leading-tight text-gray-900 transition-colors group-hover:text-primary-700 sm:text-sm">
+                  {category.name}
+                </span>
+                <span className="mt-0.5 block truncate text-[11px] text-gray-500">
+                  {category.description}
+                </span>
               </span>
-              <ArrowUpRight className="h-3.5 w-3.5 text-ink-soft opacity-0 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:opacity-100" />
             </Link>
           ))}
         </div>
@@ -188,147 +282,115 @@ export default async function HomePage() {
 
       {/* Flash sale */}
       {flashSale.length > 0 && (
-        <section className="mx-auto max-w-8xl px-4 pb-4 sm:px-6 lg:px-8">
-          <div className="bg-ink text-paper">
-            <div className="flex flex-col gap-4 px-6 py-7 sm:px-8 lg:flex-row lg:items-end lg:justify-between">
+        <section id="flash-sale" className="border-y border-gray-100 bg-gray-50 py-12 lg:py-14">
+          <div className="container-page">
+            <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-primary-300">
-                  Flash sale · berakhir 23.59
+                <p className="inline-flex items-center gap-1.5 rounded-full bg-red-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-red-600">
+                  <Flame className="h-3.5 w-3.5" aria-hidden="true" />
+                  Flash sale
                 </p>
-                <h2 className="mt-2 text-2xl font-bold tracking-[-0.02em] text-paper sm:text-3xl">
-                  Harga turun malam ini.
+                <h2 className="mt-3 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+                  Harga turun, stok terbatas
                 </h2>
+                <p className="mt-1.5 text-sm text-gray-600">
+                  Promo berakhir hari ini. Selama stok masih ada.
+                </p>
               </div>
-              <Link
-                href="/products"
-                className="group inline-flex w-fit items-center gap-1.5 border-b border-paper/30 pb-1 font-mono text-[10px] uppercase tracking-[0.14em] text-paper/70 transition-colors hover:border-paper hover:text-paper"
-              >
-                Lihat semua
-                <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-              </Link>
+              <div className="flex items-end gap-3">
+                <div>
+                  <p className="mb-1.5 text-[11px] font-medium text-gray-500">
+                    Berakhir dalam
+                  </p>
+                  <FlashSaleCountdown />
+                </div>
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 divide-y divide-paper/10 border-t border-paper/10 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-              {flashSale.map((product) => (
-                <Link
+            <div className="-mx-4 mt-7 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 sm:pb-0">
+              {flashSale.map((product, index) => (
+                <div
                   key={product.id}
-                  href={`/products/${product.slug}`}
-                  className="group flex items-center gap-4 px-6 py-5 transition-colors hover:bg-paper/[0.04] sm:px-8"
+                  className="w-[210px] shrink-0 snap-start sm:w-auto"
                 >
-                  <ProductVisual
-                    slug={product.slug}
-                    categorySlug={product.categorySlug}
-                    className="h-16 w-16 shrink-0"
-                    iconClassName="h-6 w-6"
-                  />
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-paper">
-                      {product.title}
-                    </p>
-                    <p className="mt-1 flex items-baseline gap-2">
-                      <span className="num text-sm font-semibold text-primary-200">
-                        {formatCurrency(product.price)}
-                      </span>
-                      {product.originalPrice && (
-                        <span className="num text-[11px] text-paper/40 line-through">
-                          {formatCurrency(product.originalPrice)}
-                        </span>
-                      )}
-                    </p>
-                    <p className="mt-1 truncate font-mono text-[9px] uppercase tracking-[0.12em] text-paper/40">
-                      {product.store.name}
-                    </p>
-                  </div>
-                </Link>
+                  <ProductCard product={product} index={index} />
+                </div>
               ))}
             </div>
           </div>
         </section>
       )}
 
-      {/* Featured products */}
-      <section className="mx-auto max-w-8xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-        <div className="flex items-end justify-between gap-4">
+      {/* Featured */}
+      <section className="container-page py-12 lg:py-16">
+        <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h2 className="text-xl font-bold tracking-[-0.02em] sm:text-2xl">
-              Produk pilihan
+            <p className="eyebrow">Pilihan</p>
+            <h2 className="mt-2 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+              Produk yang lagi banyak dicari
             </h2>
-            <p className="mt-1 text-[13px] text-ink-muted">
-              Paling banyak dicari minggu ini.
-            </p>
           </div>
           <Link
             href="/products"
-            className="group inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-muted transition-colors hover:text-ink"
+            className="group inline-flex items-center gap-1 text-sm font-semibold text-primary-600 hover:text-primary-700"
           >
             Semua produk
-            <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            <ArrowRight
+              className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
+              aria-hidden="true"
+            />
           </Link>
         </div>
 
-        <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-5">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          {featured.map((product, index) => (
+            <ProductCard key={product.id} product={product} index={index} />
           ))}
         </div>
       </section>
 
-      {/* Trust */}
-      <section className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 divide-y divide-line border-y border-line sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-          {[
-            {
-              title: 'Pembayaran aman',
-              description:
-                'Transaksi diproses dengan enkripsi dan perlindungan pembeli.',
-            },
-            {
-              title: 'Pengiriman terlacak',
-              description:
-                'Status pesanan diperbarui dari diproses sampai diterima.',
-            },
-            {
-              title: 'Bantuan nyata',
-              description:
-                'Tim kami membantu menyelesaikan kendala pesanan lewat chat dan email.',
-            },
-          ].map((item, index) => (
-            <div key={item.title} className="py-6 sm:px-6 sm:first:pl-0">
-              <p className="num text-[10px] text-ink-soft">
-                {String(index + 1).padStart(2, '0')}
+      {/* Seller CTA */}
+      <section className="container-page pb-14">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-700 via-primary-600 to-indigo-600 px-6 py-10 text-white sm:px-10 sm:py-12">
+          <div
+            className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-white/10 blur-2xl"
+            aria-hidden="true"
+          />
+          <div
+            className="pointer-events-none absolute -bottom-20 left-1/3 h-56 w-56 rounded-full bg-sky-300/20 blur-2xl"
+            aria-hidden="true"
+          />
+
+          <div className="relative flex flex-col items-start justify-between gap-7 lg:flex-row lg:items-end">
+            <div className="max-w-xl">
+              <p className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white/90">
+                <Store className="h-3.5 w-3.5" aria-hidden="true" />
+                Untuk seller
               </p>
-              <h3 className="mt-2 text-sm font-semibold">{item.title}</h3>
-              <p className="mt-1 max-w-[32ch] text-[13px] leading-relaxed text-ink-muted">
-                {item.description}
+              <h2 className="mt-4 text-2xl font-bold tracking-tight sm:text-3xl">
+                Toko kamu, pembeli kami.
+              </h2>
+              <p className="mt-2 max-w-[48ch] text-sm leading-relaxed text-primary-50/90">
+                Buka toko gratis, unggah produk, dan jangkau pembeli dari
+                seluruh Indonesia. Komisi 5% hanya dari transaksi berhasil.
               </p>
             </div>
-          ))}
-        </div>
-      </section>
 
-      {/* CTA seller */}
-      <section className="mx-auto max-w-8xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-        <div className="grid grid-cols-1 gap-8 bg-primary-600 px-6 py-10 text-white sm:px-10 lg:grid-cols-12 lg:items-end">
-          <div className="lg:col-span-8">
-            <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/60">
-              Untuk seller
-            </p>
-            <h2 className="mt-3 text-3xl font-extrabold tracking-[-0.03em] sm:text-4xl">
-              Toko kamu, pembeli kami.
-            </h2>
-            <p className="mt-3 max-w-[48ch] text-sm leading-relaxed text-white/75">
-              Buka toko gratis, unggah produk, dan jangkau pembeli dari seluruh
-              Indonesia. Kami menyiapkan katalog, checkout, dan pelacakannya.
-            </p>
-          </div>
-          <div className="lg:col-span-4 lg:text-right">
-            <Link
-              href="/seller"
-              className="group inline-flex items-center gap-2 bg-paper px-5 py-3 text-sm font-semibold text-ink transition-colors hover:bg-white active:scale-[0.98]"
-            >
-              Buka toko gratis
-              <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-            </Link>
+            <div className="flex flex-wrap items-center gap-3">
+              <Link
+                href="/auth/register"
+                className="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-3 text-sm font-semibold text-primary-700 shadow-soft transition-[transform,background-color] duration-200 hover:bg-primary-50 active:scale-[0.98]"
+              >
+                Daftar sebagai seller
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+              <Link
+                href="/seller"
+                className="inline-flex items-center gap-2 rounded-lg border border-white/30 px-5 py-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/10"
+              >
+                Pelajari dulu
+              </Link>
+            </div>
           </div>
         </div>
       </section>

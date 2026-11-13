@@ -7,16 +7,18 @@ export const metadata = {
 
 export default function OrderSuccessPage() {
   return (
-    <div className="mx-auto max-w-8xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
-      <Suspense
-        fallback={
-          <div className="mx-auto max-w-2xl border border-line bg-surface px-6 py-16 text-center font-mono text-[11px] uppercase tracking-[0.12em] text-ink-soft">
-            Memuat detail pesanan
-          </div>
-        }
-      >
-        <OrderSuccess />
-      </Suspense>
+    <div className="bg-gray-50/60">
+      <div className="container-page py-10 sm:py-14">
+        <Suspense
+          fallback={
+            <div className="card mx-auto max-w-2xl px-6 py-16 text-center text-sm text-gray-500">
+              Memuat detail pesanan...
+            </div>
+          }
+        >
+          <OrderSuccess />
+        </Suspense>
+      </div>
     </div>
   );
 }

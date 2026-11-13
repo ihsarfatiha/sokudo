@@ -27,8 +27,8 @@ export function StarRating({
               className={cn(
                 icon,
                 filled
-                  ? 'fill-amber-500 text-amber-500'
-                  : 'fill-transparent text-line'
+                  ? 'fill-amber-400 text-amber-400'
+                  : 'fill-gray-100 text-gray-200'
               )}
               strokeWidth={1.5}
             />
@@ -36,7 +36,7 @@ export function StarRating({
         })}
       </span>
       {showValue && (
-        <span className="num text-[11px] font-medium text-ink-muted">
+        <span className="text-xs font-medium tabular-nums text-gray-600">
           {rating.toFixed(1)}
         </span>
       )}

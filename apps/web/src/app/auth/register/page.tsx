@@ -16,7 +16,7 @@ export default function RegisterPage() {
           Sudah punya akun?{' '}
           <Link
             href="/auth/login"
-            className="font-semibold text-ink underline decoration-line underline-offset-4 hover:decoration-ink"
+            className="font-semibold text-primary-600 underline-offset-4 hover:underline"
           >
             Masuk di sini
           </Link>

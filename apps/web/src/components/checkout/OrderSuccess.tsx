@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { Check, Copy, Home, Package, ShoppingBag, Truck } from 'lucide-react';
 import { useState } from 'react';
 import { formatCurrency } from '@/lib/utils';
@@ -26,6 +27,7 @@ const steps = [
 
 export function OrderSuccess() {
   const params = useSearchParams();
+  const reduce = useReducedMotion();
   const orderNumber = params.get('order') ?? 'SKD-DEMO-0000';
   const total = Number(params.get('total') ?? 0);
   const demo = params.get('demo') === '1';
@@ -42,111 +44,128 @@ export function OrderSuccess() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl">
-      <p className="label-mono">Pesanan dibuat</p>
-      <h1 className="mt-4 text-4xl font-extrabold leading-[0.95] tracking-[-0.045em] sm:text-5xl">
-        Terima kasih.
-      </h1>
-      <p className="mt-4 max-w-[48ch] text-[14px] leading-relaxed text-ink-muted">
-        Pesanan kamu sudah masuk ke penjual. Instruksi pembayaran dikirim ke
-        email yang kamu isi saat checkout.
-      </p>
+    <div className="mx-auto max-w-3xl">
+      <div className="text-center">
+        <motion.span
+          initial={reduce ? false : { scale: 0.5, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 340, damping: 22 }}
+          className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 ring-8 ring-emerald-50/60"
+        >
+          <Check className="h-8 w-8" strokeWidth={2.4} aria-hidden="true" />
+        </motion.span>
+        <h1 className="mt-5 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          Pesanan berhasil dibuat
+        </h1>
+        <p className="mx-auto mt-2.5 max-w-[46ch] text-sm leading-relaxed text-gray-600">
+          Terima kasih. Instruksi pembayaran dikirim ke email yang kamu isi saat
+          checkout.
+        </p>
+      </div>
 
-      <div className="mt-8 border border-line bg-surface">
-        <div className="flex items-baseline justify-between gap-4 border-b border-dashed border-line px-5 py-4">
-          <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-soft">
+      <motion.div
+        initial={reduce ? false : { opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.12, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        className="card mt-7 overflow-hidden"
+      >
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-dashed border-gray-200 px-5 py-4">
+          <span className="text-xs font-medium uppercase tracking-wide text-gray-500">
             Nomor pesanan
           </span>
           <div className="flex items-center gap-2">
-            <span className="num text-[15px] font-semibold tracking-[0.02em]">
+            <span className="text-base font-bold tracking-wide text-gray-900 tabular-nums">
               {orderNumber}
             </span>
-            <button
+            <motion.button
               type="button"
               onClick={copyOrder}
-              className="rounded-sm p-1 text-ink-soft transition-colors hover:bg-ink/[0.06] hover:text-ink"
+              whileTap={reduce ? undefined : { scale: 0.88 }}
+              className="rounded-md p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
               aria-label="Salin nomor pesanan"
             >
-              {copied ? (
-                <Check className="h-3.5 w-3.5 text-emerald-700" />
-              ) : (
-                <Copy className="h-3.5 w-3.5" />
-              )}
-            </button>
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.span
+                  key={copied ? 'copied' : 'copy'}
+                  initial={reduce ? false : { scale: 0.6, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={reduce ? { opacity: 0 } : { scale: 0.6, opacity: 0 }}
+                  transition={{ duration: 0.14 }}
+                >
+                  {copied ? (
+                    <Check className="h-4 w-4 text-emerald-600" aria-hidden="true" />
+                  ) : (
+                    <Copy className="h-4 w-4" aria-hidden="true" />
+                  )}
+                </motion.span>
+              </AnimatePresence>
+            </motion.button>
           </div>
         </div>
 
-        {total > 0 && (
-          <div className="flex items-baseline justify-between px-5 py-4">
-            <span className="text-[13px] text-ink-muted">Total pembayaran</span>
-            <span className="num text-lg font-semibold">
-              {formatCurrency(total)}
-            </span>
-          </div>
-        )}
+        <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
+          <span className="text-sm text-gray-500">Total pembayaran</span>
+          <span className="text-lg font-bold tabular-nums text-gray-900">
+            {formatCurrency(total)}
+          </span>
+        </div>
 
-        <div className="flex items-center justify-between border-t border-line px-5 py-3">
-          <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-ink-soft">
+        <div className="flex items-center justify-between border-t border-gray-100 bg-gray-50 px-5 py-3">
+          <span className="text-[11px] text-gray-500">
             {copied ? 'Nomor disalin' : 'Simpan nomor ini'}
           </span>
-          <span className="rounded-sm border border-emerald-700/40 px-2 py-1 font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-emerald-800">
-            Menunggu bayar
-          </span>
+          <span className="badge-warning">Menunggu pembayaran</span>
         </div>
-      </div>
+      </motion.div>
 
       {demo && (
-        <p className="mt-4 border-l-2 border-amber-600 bg-amber-50 px-4 py-3 text-[12px] leading-relaxed text-amber-900">
+        <p className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-800">
           Mode demo: API dan PostgreSQL belum tersambung, jadi pesanan ini hanya
           disimulasikan di browser. Jalankan API dan database untuk menyimpan
           pesanan sungguhan.
         </p>
       )}
 
-      <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
         <Link href="/products" className="btn-secondary">
           Lanjut belanja
         </Link>
-        <Link href="/" className="btn-primary">
-          <Home className="h-4 w-4" aria-hidden="true" />
-          Kembali ke beranda
+        <Link href="/orders" className="btn-primary">
+          <Truck className="h-4 w-4" aria-hidden="true" />
+          Lacak pesanan
         </Link>
       </div>
 
-      <div className="mt-12">
-        <h2 className="label-mono">Setelah ini</h2>
-        <ol className="mt-3 divide-y divide-line border-t border-line">
+      <div className="card mt-8 p-5 sm:p-6">
+        <h2 className="text-sm font-semibold text-gray-900">Setelah ini</h2>
+        <ol className="mt-3 space-y-4">
           {steps.map((step, index) => {
             const Icon = step.icon;
             const active = index === 0;
             return (
-              <li key={step.title} className="flex items-start gap-3 py-4">
+              <li key={step.title} className="flex items-start gap-3">
                 <span
-                  className={`flex h-8 w-8 shrink-0 items-center justify-center border ${
+                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${
                     active
-                      ? 'border-ink bg-ink text-paper'
-                      : 'border-line text-ink-soft'
+                      ? 'bg-primary-600 text-white'
+                      : 'bg-gray-100 text-gray-400'
                   }`}
                 >
-                  <Icon
-                    className="h-3.5 w-3.5"
-                    strokeWidth={1.5}
-                    aria-hidden="true"
-                  />
+                  <Icon className="h-4 w-4" aria-hidden="true" />
                 </span>
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <p
-                    className={`text-[13px] font-semibold ${
-                      active ? 'text-ink' : 'text-ink-muted'
+                    className={`text-sm font-semibold ${
+                      active ? 'text-gray-900' : 'text-gray-600'
                     }`}
                   >
                     {step.title}
                   </p>
-                  <p className="mt-0.5 text-[12px] leading-relaxed text-ink-soft">
+                  <p className="mt-0.5 text-xs leading-relaxed text-gray-500">
                     {step.description}
                   </p>
                 </div>
-                <span className="num ml-auto shrink-0 text-[10px] text-ink-soft">
+                <span className="text-xs font-medium text-gray-300 tabular-nums">
                   {String(index + 1).padStart(2, '0')}
                 </span>
               </li>
@@ -154,6 +173,14 @@ export function OrderSuccess() {
           })}
         </ol>
       </div>
+
+      <Link
+        href="/"
+        className="mx-auto mt-6 flex w-fit items-center gap-1.5 text-sm font-medium text-gray-500 transition-colors hover:text-primary-600"
+      >
+        <Home className="h-4 w-4" aria-hidden="true" />
+        Kembali ke beranda
+      </Link>
     </div>
   );
 }

@@ -25,66 +25,74 @@ export default async function ProductsPage({ searchParams }: CatalogPageProps) {
   const products = await getProducts({ q, category, sort });
 
   return (
-    <div className="mx-auto max-w-8xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
-      <nav
-        className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.12em] text-ink-soft"
-        aria-label="Breadcrumb"
-      >
-        <Link href="/" className="transition-colors hover:text-ink">
-          Beranda
-        </Link>
-        <ChevronRight className="h-3 w-3" aria-hidden="true" />
-        <span className="text-ink-muted">Semua produk</span>
-      </nav>
-
-      <div className="mt-6 flex flex-wrap items-end justify-between gap-6 border-b border-line pb-6">
-        <div>
-          <h1 className="text-3xl font-extrabold tracking-[-0.04em] sm:text-4xl">
-            {q ? 'Hasil pencarian' : 'Semua produk'}
-          </h1>
-          <p className="mt-2 max-w-[52ch] text-[13px] leading-relaxed text-ink-muted">
-            {q
-              ? `Menampilkan produk yang cocok dengan “${q}”.`
-              : 'Dari toko terverifikasi di seluruh Indonesia. Harga sudah termasuk pajak, belum ongkir.'}
-          </p>
-        </div>
-        <p className="num text-[13px] text-ink-soft">
-          {products.length} produk
-        </p>
-      </div>
-
-      <div className="mt-6">
-        <CatalogControls
-          q={q}
-          category={category}
-          sort={sort}
-          total={products.length}
-        />
-      </div>
-
-      <div className="mt-8">
-        {products.length === 0 ? (
-          <div className="flex flex-col items-center justify-center border border-line bg-surface px-6 py-20 text-center">
-            <PackageSearch
-              className="h-8 w-8 text-ink-soft"
-              strokeWidth={1.25}
-              aria-hidden="true"
-            />
-            <h2 className="mt-4 text-lg font-bold">Produk tidak ditemukan</h2>
-            <p className="mt-1 max-w-sm text-[13px] leading-relaxed text-ink-muted">
-              Coba kata kunci lain atau pilih kategori yang berbeda.
-            </p>
-            <Link href="/products" className="btn-secondary mt-6">
-              Reset filter
+    <div className="bg-gray-50/60">
+      <div className="border-b border-gray-100 bg-white">
+        <div className="container-page py-7 lg:py-9">
+          <nav
+            className="flex items-center gap-1.5 text-xs text-gray-500"
+            aria-label="Breadcrumb"
+          >
+            <Link href="/" className="transition-colors hover:text-primary-600">
+              Beranda
             </Link>
+            <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+            <span className="font-medium text-gray-900">Semua produk</span>
+          </nav>
+
+          <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+                {q ? `Hasil untuk “${q}”` : 'Semua produk'}
+              </h1>
+              <p className="mt-1.5 max-w-[56ch] text-sm leading-relaxed text-gray-600">
+                {q
+                  ? 'Menampilkan produk yang paling relevan dengan pencarian kamu.'
+                  : 'Dari toko terverifikasi di seluruh Indonesia. Harga sudah termasuk pajak, belum ongkir.'}
+              </p>
+            </div>
+            <span className="badge-primary">{products.length} produk</span>
           </div>
-        ) : (
-          <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-5">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        )}
+        </div>
+      </div>
+
+      <div className="container-page py-7">
+        <div className="card p-4 sm:p-5">
+          <CatalogControls
+            q={q}
+            category={category}
+            sort={sort}
+            total={products.length}
+          />
+        </div>
+
+        <div className="mt-6">
+          {products.length === 0 ? (
+            <div className="card flex flex-col items-center justify-center px-6 py-20 text-center">
+              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-400">
+                <PackageSearch className="h-6 w-6" aria-hidden="true" />
+              </span>
+              <h2 className="mt-4 text-lg font-bold text-gray-900">
+                Produk tidak ditemukan
+              </h2>
+              <p className="mt-1 max-w-sm text-sm leading-relaxed text-gray-600">
+                Coba kata kunci lain atau pilih kategori yang berbeda.
+              </p>
+              <Link href="/products" className="btn-secondary mt-6">
+                Reset filter
+              </Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+              {products.map((product, index) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  index={index}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

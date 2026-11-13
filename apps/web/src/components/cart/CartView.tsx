@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import {
   ArrowLeft,
   ArrowRight,
@@ -13,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useCart, FREE_SHIPPING_MIN } from '@/components/cart/CartProvider';
 import { ProductVisual } from '@/components/product/ProductVisual';
+import { styleForLine } from '@/lib/product-style';
 import { formatCurrency } from '@/lib/utils';
 
 export function CartView() {
@@ -25,27 +27,27 @@ export function CartView() {
     setQuantity,
     ready,
   } = useCart();
+  const reduce = useReducedMotion();
 
   if (!ready) {
     return (
-      <div className="border border-line bg-surface px-6 py-16 text-center font-mono text-[11px] uppercase tracking-[0.12em] text-ink-soft">
-        Memuat keranjang
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]">
+        <div className="card h-64 animate-pulse bg-gray-50" />
+        <div className="card h-72 animate-pulse bg-gray-50" />
       </div>
     );
   }
 
   if (items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center border border-line bg-surface px-6 py-20 text-center">
-        <ShoppingBag
-          className="h-8 w-8 text-ink-soft"
-          strokeWidth={1.25}
-          aria-hidden="true"
-        />
-        <h2 className="mt-4 text-lg font-bold tracking-[-0.02em]">
+      <div className="card flex flex-col items-center justify-center px-6 py-20 text-center">
+        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary-50 text-primary-600">
+          <ShoppingBag className="h-7 w-7" aria-hidden="true" />
+        </span>
+        <h2 className="mt-4 text-lg font-bold text-gray-900">
           Keranjang masih kosong
         </h2>
-        <p className="mt-1.5 max-w-[38ch] text-[13px] leading-relaxed text-ink-muted">
+        <p className="mt-1.5 max-w-sm text-sm leading-relaxed text-gray-600">
           Belum ada produk di keranjang. Mulai dari kategori atau cari langsung
           produk yang kamu butuhkan.
         </p>
@@ -61,166 +63,206 @@ export function CartView() {
   const progress = Math.min(100, Math.round((subtotal / FREE_SHIPPING_MIN) * 100));
 
   return (
-    <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_340px] lg:gap-12">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]">
       <div>
-        {remaining > 0 && (
-          <div className="mb-6 border border-line bg-surface px-4 py-3.5">
-            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-              <p className="text-[13px] text-ink-muted">
+        {remaining > 0 ? (
+          <div className="mb-4 flex items-start gap-2.5 rounded-xl border border-primary-100 bg-primary-50 px-4 py-3">
+            <Truck
+              className="mt-0.5 h-4 w-4 shrink-0 text-primary-600"
+              aria-hidden="true"
+            />
+            <div className="min-w-0 flex-1">
+              <p className="text-xs text-primary-900">
                 Tambah{' '}
-                <span className="num font-semibold text-ink">
+                <span className="font-semibold tabular-nums">
                   {formatCurrency(remaining)}
                 </span>{' '}
-                lagi untuk gratis ongkir
+                lagi untuk gratis ongkir.
               </p>
-              <span className="num text-[11px] text-ink-soft">
-                {progress}%
-              </span>
+              <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-primary-100">
+                <div
+                  className="h-full rounded-full bg-primary-600 transition-[width] duration-500 ease-out"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
             </div>
-            <div className="mt-2.5 h-1 w-full overflow-hidden bg-line">
-              <div
-                className="h-full bg-primary-600 transition-[width] duration-300 ease-out"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
+          </div>
+        ) : (
+          <div className="mb-4 flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-xs font-medium text-emerald-700">
+            <Truck className="h-4 w-4 shrink-0" aria-hidden="true" />
+            Selamat, pesanan ini sudah gratis ongkir.
           </div>
         )}
 
-        <div className="flex items-baseline justify-between border-b border-line pb-2.5">
-          <h2 className="label-mono">Produk</h2>
-          <span className="num text-[11px] text-ink-soft">
-            {items.length} item
-          </span>
-        </div>
+        <div className="card overflow-hidden">
+          <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
+            <h2 className="text-sm font-semibold text-gray-900">
+              Produk di keranjang
+            </h2>
+            <span className="text-xs text-gray-500">{items.length} produk</span>
+          </div>
 
-        <ul className="divide-y divide-line">
-          {items.map((line) => (
-            <li key={line.productId} className="flex gap-4 py-5 sm:gap-5">
-              <Link
-                href={`/products/${line.slug}`}
-                className="shrink-0"
-                aria-label={line.title}
-              >
-                <ProductVisual
-                  slug={line.slug}
-                  categorySlug={line.categorySlug}
-                  className="h-24 w-24 sm:h-28 sm:w-28"
-                  iconClassName="h-8 w-8"
-                />
-              </Link>
-
-              <div className="flex min-w-0 flex-1 flex-col">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
+          <ul className="divide-y divide-gray-100">
+            <AnimatePresence initial={false}>
+              {items.map((line) => {
+                const style = styleForLine(line.slug, line.categorySlug);
+                return (
+                  <motion.li
+                    key={line.productId}
+                    layout={!reduce}
+                    exit={
+                      reduce
+                        ? { opacity: 0 }
+                        : { opacity: 0, x: -16, transition: { duration: 0.18 } }
+                    }
+                    className="flex gap-3 p-4 sm:gap-4"
+                  >
                     <Link
                       href={`/products/${line.slug}`}
-                      className="line-clamp-2 text-[13.5px] font-semibold leading-snug underline-offset-4 hover:underline"
+                      className="shrink-0"
+                      aria-label={line.title}
                     >
-                      {line.title}
+                      <ProductVisual
+                        emoji={style.emoji}
+                        gradient={style.gradient}
+                        className="h-20 w-20 rounded-lg sm:h-24 sm:w-24"
+                        emojiClassName="text-3xl sm:text-4xl"
+                      />
                     </Link>
-                    <p className="mt-0.5 truncate text-[11px] text-ink-soft">
-                      {line.storeName}
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => removeItem(line.productId)}
-                    className="shrink-0 rounded-sm p-1.5 text-ink-soft transition-colors hover:bg-red-50 hover:text-red-700"
-                    aria-label={`Hapus ${line.title}`}
-                  >
-                    <Trash2 className="h-4 w-4" strokeWidth={1.5} />
-                  </button>
-                </div>
 
-                <div className="mt-auto flex flex-wrap items-end justify-between gap-3 pt-3">
-                  <div className="inline-flex h-8 items-center border border-line bg-surface">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setQuantity(line.productId, line.quantity - 1)
-                      }
-                      className="flex h-full w-8 items-center justify-center text-ink-muted transition-colors hover:bg-ink/[0.05] hover:text-ink"
-                      aria-label="Kurangi jumlah"
-                    >
-                      <Minus className="h-3.5 w-3.5" />
-                    </button>
-                    <span className="num w-8 border-x border-line text-center text-[12px] font-medium">
-                      {line.quantity}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setQuantity(line.productId, line.quantity + 1)
-                      }
-                      className="flex h-full w-8 items-center justify-center text-ink-muted transition-colors hover:bg-ink/[0.05] hover:text-ink"
-                      aria-label="Tambah jumlah"
-                    >
-                      <Plus className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
+                    <div className="flex min-w-0 flex-1 flex-col">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <Link
+                            href={`/products/${line.slug}`}
+                            className="line-clamp-2 text-sm font-semibold leading-snug text-gray-900 underline-offset-4 hover:text-primary-700 hover:underline"
+                          >
+                            {line.title}
+                          </Link>
+                          <p className="mt-0.5 truncate text-[11px] text-gray-500">
+                            {line.storeName}
+                          </p>
+                        </div>
+                        <motion.button
+                          type="button"
+                          onClick={() => removeItem(line.productId)}
+                          whileTap={reduce ? undefined : { scale: 0.88 }}
+                          className="shrink-0 rounded-md p-1.5 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600"
+                          aria-label={`Hapus ${line.title}`}
+                        >
+                          <Trash2 className="h-4 w-4" aria-hidden="true" />
+                        </motion.button>
+                      </div>
 
-                  <div className="text-right">
-                    <p className="num text-sm font-semibold">
-                      {formatCurrency(line.price * line.quantity)}
-                    </p>
-                    <p className="num text-[11px] text-ink-soft">
-                      {formatCurrency(line.price)} / item
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </li>
-          ))}
-        </ul>
+                      <div className="mt-auto flex flex-wrap items-end justify-between gap-2 pt-2.5">
+                        <div className="inline-flex h-8 items-center overflow-hidden rounded-lg border border-gray-300 bg-white">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setQuantity(line.productId, line.quantity - 1)
+                            }
+                            className="flex h-full w-8 items-center justify-center text-gray-500 transition-colors hover:bg-gray-50 hover:text-gray-900 active:scale-90"
+                            aria-label="Kurangi jumlah"
+                          >
+                            <Minus className="h-3.5 w-3.5" aria-hidden="true" />
+                          </button>
+                          <span className="flex w-8 justify-center overflow-hidden border-x border-gray-200 text-xs font-semibold tabular-nums text-gray-900">
+                            <AnimatePresence mode="popLayout" initial={false}>
+                              <motion.span
+                                key={line.quantity}
+                                initial={reduce ? false : { y: 6, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                exit={reduce ? { opacity: 0 } : { y: -6, opacity: 0 }}
+                                transition={{ duration: 0.14 }}
+                              >
+                                {line.quantity}
+                              </motion.span>
+                            </AnimatePresence>
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setQuantity(line.productId, line.quantity + 1)
+                            }
+                            className="flex h-full w-8 items-center justify-center text-gray-500 transition-colors hover:bg-gray-50 hover:text-gray-900 active:scale-90"
+                            aria-label="Tambah jumlah"
+                          >
+                            <Plus className="h-3.5 w-3.5" aria-hidden="true" />
+                          </button>
+                        </div>
+
+                        <div className="text-right">
+                          <p className="text-sm font-semibold tabular-nums text-gray-900">
+                            {formatCurrency(line.price * line.quantity)}
+                          </p>
+                          <p className="text-[11px] text-gray-400 tabular-nums">
+                            {formatCurrency(line.price)} / item
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.li>
+                );
+              })}
+            </AnimatePresence>
+          </ul>
+        </div>
 
         <Link
           href="/products"
-          className="mt-6 inline-flex items-center gap-2 text-[13px] font-medium text-ink-muted underline-offset-4 transition-colors hover:text-ink hover:underline"
+          className="group mt-4 inline-flex items-center gap-2 text-sm font-medium text-gray-600 transition-colors hover:text-primary-600"
         >
-          <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
+          <ArrowLeft
+            className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5"
+            aria-hidden="true"
+          />
           Lanjut belanja
         </Link>
       </div>
 
-      <aside className="h-fit lg:sticky lg:top-40">
-        <div className="border border-line bg-surface">
-          <div className="border-b border-line px-5 py-4">
-            <h2 className="text-[13px] font-semibold">Ringkasan belanja</h2>
+      <aside className="h-fit lg:sticky lg:top-36">
+        <div className="card overflow-hidden">
+          <div className="border-b border-gray-100 px-5 py-4">
+            <h2 className="text-sm font-semibold text-gray-900">
+              Ringkasan belanja
+            </h2>
           </div>
 
-          <dl className="space-y-2.5 px-5 py-4 text-[13px]">
-            <div className="flex items-baseline justify-between text-ink-muted">
+          <dl className="space-y-2.5 px-5 py-4 text-sm">
+            <div className="flex items-baseline justify-between text-gray-500">
               <dt>Subtotal</dt>
-              <dd className="num text-ink">{formatCurrency(subtotal)}</dd>
+              <dd className="tabular-nums text-gray-900">
+                {formatCurrency(subtotal)}
+              </dd>
             </div>
-            <div className="flex items-baseline justify-between text-ink-muted">
+            <div className="flex items-baseline justify-between text-gray-500">
               <dt>Ongkos kirim</dt>
-              <dd className="num text-ink">
+              <dd className="tabular-nums">
                 {shippingFee === 0 ? (
-                  <span className="text-emerald-800">Gratis</span>
+                  <span className="font-medium text-emerald-600">Gratis</span>
                 ) : (
-                  formatCurrency(shippingFee)
+                  <span className="text-gray-900">
+                    {formatCurrency(shippingFee)}
+                  </span>
                 )}
               </dd>
             </div>
-            <div className="flex items-baseline justify-between border-t border-dashed border-line pt-3">
-              <dt className="text-sm font-semibold">Total</dt>
-              <dd className="num text-base font-semibold">
+            <div className="flex items-baseline justify-between border-t border-gray-100 pt-3">
+              <dt className="font-semibold text-gray-900">Total</dt>
+              <dd className="text-lg font-bold tabular-nums text-gray-900">
                 {formatCurrency(total)}
               </dd>
             </div>
           </dl>
 
-          <div className="border-t border-line px-5 py-4">
+          <div className="border-t border-gray-100 px-5 py-4">
             <Link href="/checkout" className="btn-primary w-full">
               Lanjut ke checkout
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
-
-            <p className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-ink-soft">
+            <p className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-gray-500">
               <ShieldCheck
-                className="h-3.5 w-3.5 text-emerald-700"
-                strokeWidth={1.5}
+                className="h-3.5 w-3.5 text-emerald-600"
                 aria-hidden="true"
               />
               Transaksi aman dan terlindungi
@@ -228,13 +270,8 @@ export function CartView() {
           </div>
         </div>
 
-        <p className="mt-3 flex items-start gap-1.5 font-mono text-[10px] uppercase leading-relaxed tracking-[0.1em] text-ink-soft">
-          <Truck
-            className="mt-0.5 h-3.5 w-3.5 shrink-0"
-            strokeWidth={1.5}
-            aria-hidden="true"
-          />
-          Gratis ongkir untuk pesanan di atas Rp300.000
+        <p className="mt-3 rounded-lg bg-gray-50 px-3 py-2.5 text-center text-[11px] leading-relaxed text-gray-500">
+          Gratis ongkir untuk pesanan di atas Rp300.000 sebelum ongkir.
         </p>
       </aside>
     </div>

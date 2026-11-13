@@ -1,65 +1,58 @@
-import { getProductArt } from '@/lib/product-art';
 import { cn } from '@/lib/utils';
 
 interface ProductVisualProps {
-  slug: string;
-  categorySlug?: string;
+  emoji: string;
+  gradient: [string, string];
   className?: string;
-  iconClassName?: string;
+  emojiClassName?: string;
   discount?: number;
   label?: string;
 }
 
 /**
- * Flat catalog plate: tinted paper, fine ring, one line drawing.
- * Replaces the old emoji-on-gradient tile.
+ * Product tile: gradient plate with the product emoji.
+ * Motion comes from the parent's `group` hover.
  */
 export function ProductVisual({
-  slug,
-  categorySlug,
+  emoji,
+  gradient,
   className,
-  iconClassName = 'h-1/3 w-1/3',
+  emojiClassName = 'text-6xl',
   discount,
   label,
 }: ProductVisualProps) {
-  const { icon: Icon, tint } = getProductArt(slug, categorySlug);
-
   return (
     <div
       className={cn(
-        'relative flex items-center justify-center overflow-hidden border border-line/70',
+        'relative flex items-center justify-center overflow-hidden',
         className
       )}
-      style={{ backgroundColor: tint }}
+      style={{
+        backgroundImage: `linear-gradient(135deg, ${gradient[0]}, ${gradient[1]})`,
+      }}
       aria-hidden="true"
     >
-      <span className="pointer-events-none absolute inset-0 grain opacity-[0.16] mix-blend-multiply" />
+      <span className="pointer-events-none absolute -right-8 -top-10 h-32 w-32 rounded-full bg-white/15 blur-2xl" />
+      <span className="pointer-events-none absolute -bottom-12 -left-10 h-36 w-36 rounded-full bg-black/20 blur-2xl" />
+      <span className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.22),transparent_45%)]" />
 
-      <svg
-        viewBox="0 0 200 200"
-        className="pointer-events-none absolute inset-0 h-full w-full text-ink/[0.07]"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1"
+      <span
+        className={cn(
+          'relative select-none drop-shadow-[0_10px_24px_rgba(0,0,0,0.28)] transition-transform duration-500 ease-out group-hover:scale-110',
+          emojiClassName
+        )}
       >
-        <circle cx="100" cy="100" r="64" />
-        <circle cx="100" cy="100" r="88" />
-        <path d="M100 12v18M100 170v18M12 100h18M170 100h18" />
-      </svg>
-
-      <Icon
-        className={cn('relative text-ink/45 transition-transform duration-500 ease-out group-hover:-translate-y-1', iconClassName)}
-        strokeWidth={1.1}
-      />
+        {emoji}
+      </span>
 
       {typeof discount === 'number' && discount > 0 && (
-        <span className="absolute left-3 top-3 rounded-sm bg-ink px-1.5 py-1 font-mono text-[10px] font-semibold tracking-[0.04em] text-paper">
-          −{discount}%
+        <span className="absolute left-2.5 top-2.5 rounded-full bg-red-500 px-2 py-0.5 text-[11px] font-bold text-white shadow-sm">
+          -{discount}%
         </span>
       )}
 
       {label && (
-        <span className="absolute bottom-3 left-3 rounded-sm bg-surface/95 px-2 py-1 font-mono text-[9px] font-medium uppercase tracking-[0.12em] text-ink-muted">
+        <span className="absolute bottom-2.5 left-2.5 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-gray-700 backdrop-blur">
           {label}
         </span>
       )}

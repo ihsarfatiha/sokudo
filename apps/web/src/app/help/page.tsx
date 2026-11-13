@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import {
-  ChevronDown,
+  ChevronRight,
   CreditCard,
   Mail,
   MessageCircle,
@@ -10,6 +10,7 @@ import {
   ShoppingBag,
   Truck,
 } from 'lucide-react';
+import { FaqAccordion } from '@/components/help/FaqAccordion';
 
 export const metadata = {
   title: 'Pusat Bantuan — Sokudo',
@@ -93,192 +94,185 @@ const faqs = [
   {
     question: 'Bagaimana cara menghubungi penjual?',
     answer:
-      'Gunakan tombol Kunjungi di halaman produk atau hubungi tim bantuan kami melalui halaman Kontak.',
+      'Gunakan tombol di halaman produk atau hubungi tim bantuan kami melalui halaman Kontak.',
   },
 ];
 
 export default function HelpPage() {
   return (
-    <div className="mx-auto max-w-8xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
-      <nav
-        className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.12em] text-ink-soft"
-        aria-label="Breadcrumb"
-      >
-        <Link href="/" className="transition-colors hover:text-ink">
-          Beranda
-        </Link>
-        <span aria-hidden="true">/</span>
-        <span className="text-ink-muted">Pusat bantuan</span>
-      </nav>
+    <div className="bg-gray-50/60">
+      <section className="relative overflow-hidden border-b border-gray-100 bg-gradient-to-br from-primary-50 via-white to-indigo-50">
+        <div
+          className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-primary-200/40 blur-3xl"
+          aria-hidden="true"
+        />
+        <div className="container-page relative py-10 lg:py-14">
+          <nav
+            className="flex items-center gap-1.5 text-xs text-gray-500"
+            aria-label="Breadcrumb"
+          >
+            <Link href="/" className="transition-colors hover:text-primary-600">
+              Beranda
+            </Link>
+            <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+            <span className="font-medium text-gray-900">Pusat bantuan</span>
+          </nav>
 
-      <section className="mt-8 grid grid-cols-1 gap-10 border-b border-line pb-10 lg:grid-cols-12 lg:gap-12">
-        <div className="lg:col-span-7">
-          <h1 className="text-balance text-[clamp(2.25rem,5vw,3.5rem)] font-extrabold leading-[0.95] tracking-[-0.045em]">
-            Ada yang bisa kami bantu?
-          </h1>
-          <p className="mt-4 max-w-[52ch] text-[14px] leading-relaxed text-ink-muted">
-            Panduan singkat seputar belanja, pengiriman, pembayaran, dan
-            pengembalian. Kalau belum terjawab, kirim pesan ke tim kami.
-          </p>
-        </div>
+          <div className="mt-6 grid grid-cols-1 items-end gap-8 lg:grid-cols-12">
+            <div className="lg:col-span-7">
+              <p className="eyebrow">Pusat bantuan</p>
+              <h1 className="mt-3 text-balance text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                Ada yang bisa kami bantu?
+              </h1>
+              <p className="mt-3 max-w-[52ch] text-sm leading-relaxed text-gray-600">
+                Panduan singkat seputar belanja, pengiriman, pembayaran, dan
+                pengembalian. Kalau belum terjawab, kirim pesan ke tim kami.
+              </p>
+            </div>
 
-        <div className="lg:col-span-5 lg:pt-2">
-          <form action="/products" role="search" className="flex items-stretch border border-ink/80 bg-surface">
-            <Search
-              className="ml-4 h-4 w-4 shrink-0 self-center text-ink-soft"
-              aria-hidden="true"
-            />
-            <input
-              type="search"
-              name="q"
-              placeholder="Cari produk atau topik bantuan"
-              aria-label="Cari produk atau topik bantuan"
-              className="w-full bg-transparent px-3 py-3 text-sm text-ink placeholder:text-ink-soft focus:outline-none"
-            />
-            <button
-              type="submit"
-              className="shrink-0 bg-ink px-5 font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-paper transition-colors hover:bg-ink/85 active:scale-[0.99]"
-            >
-              Cari
-            </button>
-          </form>
-
-          <div className="mt-5 grid grid-cols-2 divide-x divide-line border-y border-line">
-            {topics.map((topic, index) => (
-              <a
-                key={topic.id}
-                href={`#${topic.id}`}
-                className="group flex items-center gap-2.5 border-b border-line py-3 pr-3 transition-colors hover:bg-surface even:pl-3 even:pr-0"
+            <div className="lg:col-span-5">
+              <form
+                action="/products"
+                role="search"
+                className="group flex items-center rounded-xl border border-gray-200 bg-white p-1.5 shadow-soft transition-shadow duration-300 focus-within:border-primary-300 focus-within:shadow-lift"
               >
-                <span className="num text-[9px] text-ink-soft">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <span className="text-[12.5px] font-medium group-hover:underline">
-                  {topic.title}
-                </span>
-              </a>
-            ))}
+                <Search
+                  className="ml-2.5 h-4 w-4 shrink-0 text-gray-400 transition-colors group-focus-within:text-primary-600"
+                  aria-hidden="true"
+                />
+                <input
+                  type="search"
+                  name="q"
+                  placeholder="Cari produk atau topik bantuan"
+                  aria-label="Cari produk atau topik bantuan"
+                  className="w-full bg-transparent px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none"
+                />
+                <button type="submit" className="btn-primary shrink-0 !px-4 !py-2">
+                  Cari
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <div className="mt-7 grid grid-cols-2 gap-2 sm:grid-cols-4">
+            {topics.map((topic) => {
+              const Icon = topic.icon;
+              return (
+                <a
+                  key={topic.id}
+                  href={`#${topic.id}`}
+                  className="group flex items-center gap-2.5 rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-xs font-semibold text-gray-700 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:border-primary-200 hover:text-primary-700 hover:shadow-soft"
+                >
+                  <Icon className="h-4 w-4 shrink-0 text-primary-600" aria-hidden="true" />
+                  <span className="truncate">{topic.title}</span>
+                </a>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      <div className="mt-10 grid grid-cols-1 gap-12 lg:grid-cols-12">
-        <div className="lg:col-span-7">
-          <h2 className="text-xl font-bold tracking-[-0.02em]">Panduan</h2>
-          <div className="mt-4 space-y-8">
-            {topics.map((topic) => {
-              const Icon = topic.icon;
-              return (
-                <section
-                  key={topic.id}
-                  id={topic.id}
-                  className="scroll-mt-40 border-t border-line pt-5"
-                >
-                  <div className="flex items-start gap-3">
-                    <Icon
-                      className="mt-0.5 h-4 w-4 shrink-0 text-ink-soft"
-                      strokeWidth={1.5}
-                      aria-hidden="true"
-                    />
-                    <div>
-                      <h3 className="text-[15px] font-semibold tracking-[-0.01em]">
-                        {topic.title}
-                      </h3>
-                      <p className="mt-0.5 text-[12px] text-ink-muted">
-                        {topic.description}
-                      </p>
-                    </div>
-                  </div>
-                  <ol className="mt-4 space-y-2.5">
-                    {topic.steps.map((step, index) => (
-                      <li
-                        key={step}
-                        className="flex items-start gap-3 text-[13px] leading-relaxed text-ink-muted"
-                      >
-                        <span className="num mt-0.5 w-4 shrink-0 text-[10px] text-ink-soft">
-                          {String(index + 1).padStart(2, '0')}
+      <div className="container-page py-10">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+          <div className="lg:col-span-7">
+            <div className="card p-5 sm:p-6">
+              <h2 className="text-lg font-bold tracking-tight text-gray-900">
+                Panduan
+              </h2>
+              <div className="mt-4 space-y-8">
+                {topics.map((topic) => {
+                  const Icon = topic.icon;
+                  return (
+                    <section
+                      key={topic.id}
+                      id={topic.id}
+                      className="scroll-mt-36 border-t border-gray-100 pt-5 first:border-t-0 first:pt-0"
+                    >
+                      <div className="flex items-start gap-3">
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary-50 text-primary-600">
+                          <Icon className="h-4 w-4" aria-hidden="true" />
                         </span>
-                        {step}
-                      </li>
-                    ))}
-                  </ol>
-                </section>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="lg:col-span-5">
-          <h2 className="text-xl font-bold tracking-[-0.02em]">
-            Pertanyaan umum
-          </h2>
-          <div className="mt-4 divide-y divide-line border-y border-line">
-            {faqs.map((faq) => (
-              <details key={faq.question} className="group py-4">
-                <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-[13px] font-semibold leading-snug">
-                  {faq.question}
-                  <ChevronDown
-                    className="mt-0.5 h-4 w-4 shrink-0 text-ink-soft transition-transform duration-200 group-open:rotate-180"
-                    strokeWidth={1.5}
-                    aria-hidden="true"
-                  />
-                </summary>
-                <p className="mt-2.5 max-w-[54ch] text-[12.5px] leading-relaxed text-ink-muted">
-                  {faq.answer}
-                </p>
-              </details>
-            ))}
+                        <div>
+                          <h3 className="text-sm font-semibold text-gray-900">
+                            {topic.title}
+                          </h3>
+                          <p className="mt-0.5 text-xs text-gray-500">
+                            {topic.description}
+                          </p>
+                        </div>
+                      </div>
+                      <ol className="mt-4 space-y-2.5">
+                        {topic.steps.map((step, index) => (
+                          <li
+                            key={step}
+                            className="flex items-start gap-3 text-sm leading-relaxed text-gray-600"
+                          >
+                            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gray-100 text-[10px] font-bold text-gray-500">
+                              {index + 1}
+                            </span>
+                            {step}
+                          </li>
+                        ))}
+                      </ol>
+                    </section>
+                  );
+                })}
+              </div>
+            </div>
           </div>
 
-          <div className="mt-8 border border-line bg-surface px-5 py-4">
-            <h3 className="flex items-center gap-2 text-[13px] font-semibold">
-              <PackageCheck
-                className="h-4 w-4 text-emerald-700"
-                strokeWidth={1.5}
-                aria-hidden="true"
-              />
-              Masih butuh bantuan?
-            </h3>
-            <p className="mt-1.5 text-[12.5px] leading-relaxed text-ink-muted">
-              Tim kami membalas lewat email dalam 1×24 jam kerja.
-            </p>
-            <Link
-              href="/contact"
-              className="btn-secondary mt-4 w-full !py-2.5 !text-[12px]"
-            >
-              Hubungi kami
-            </Link>
-          </div>
+          <div className="lg:col-span-5">
+            <div className="card p-5 sm:p-6">
+              <h2 className="text-lg font-bold tracking-tight text-gray-900">
+                Pertanyaan umum
+              </h2>
+              <div className="mt-2">
+                <FaqAccordion faqs={faqs} />
+              </div>
+            </div>
 
-          <ul className="mt-6 divide-y divide-line border-t border-line">
-            {[
-              {
-                icon: MessageCircle,
-                title: 'Chat bantuan',
-                text: 'Senin–Sabtu, 08.00–20.00 WIB',
-              },
-              {
-                icon: Mail,
-                title: 'Email',
-                text: 'halo@sokudo.id',
-              },
-            ].map((item) => {
-              const Icon = item.icon;
-              return (
-                <li key={item.title} className="flex items-start gap-3 py-3.5">
-                  <Icon
-                    className="mt-0.5 h-4 w-4 shrink-0 text-ink-soft"
-                    strokeWidth={1.5}
-                    aria-hidden="true"
-                  />
-                  <div>
-                    <p className="text-[12.5px] font-medium">{item.title}</p>
-                    <p className="text-[11px] text-ink-soft">{item.text}</p>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+            <div className="card mt-4 p-5">
+              <h3 className="flex items-center gap-2 text-sm font-semibold text-gray-900">
+                <PackageCheck className="h-4 w-4 text-emerald-600" aria-hidden="true" />
+                Masih butuh bantuan?
+              </h3>
+              <p className="mt-1.5 text-xs leading-relaxed text-gray-600">
+                Tim kami membalas lewat email dalam 1×24 jam kerja.
+              </p>
+              <Link href="/contact" className="btn-secondary mt-4 w-full !py-2.5 !text-xs">
+                Hubungi kami
+              </Link>
+            </div>
+
+            <ul className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-1">
+              {[
+                {
+                  icon: MessageCircle,
+                  title: 'Chat bantuan',
+                  text: 'Senin–Sabtu, 08.00–20.00 WIB',
+                },
+                {
+                  icon: Mail,
+                  title: 'Email',
+                  text: 'halo@sokudo.id',
+                },
+              ].map((item) => {
+                const Icon = item.icon;
+                return (
+                  <li
+                    key={item.title}
+                    className="flex items-start gap-3 rounded-lg border border-gray-200 bg-white px-4 py-3"
+                  >
+                    <Icon className="mt-0.5 h-4 w-4 shrink-0 text-gray-400" aria-hidden="true" />
+                    <div>
+                      <p className="text-xs font-semibold text-gray-900">{item.title}</p>
+                      <p className="mt-0.5 text-[11px] text-gray-500">{item.text}</p>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </div>
       </div>
     </div>

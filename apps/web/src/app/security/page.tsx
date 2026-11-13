@@ -49,128 +49,138 @@ const tips = [
 
 export default function SecurityPage() {
   return (
-    <div className="mx-auto max-w-8xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
-      <nav
-        className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.12em] text-ink-soft"
-        aria-label="Breadcrumb"
-      >
-        <Link href="/" className="transition-colors hover:text-ink">
-          Beranda
-        </Link>
-        <span aria-hidden="true">/</span>
-        <span className="text-ink-muted">Keamanan</span>
-      </nav>
-
-      <section className="mt-8 grid grid-cols-1 gap-10 border-b border-line pb-10 lg:grid-cols-12 lg:gap-12">
-        <div className="lg:col-span-7">
-          <h1 className="text-balance text-[clamp(2.25rem,5vw,3.5rem)] font-extrabold leading-[0.95] tracking-[-0.045em]">
-            Belanja tenang, data tetap aman.
-          </h1>
-        </div>
-        <div className="lg:col-span-5 lg:pt-2">
-          <p className="max-w-[50ch] text-[14px] leading-relaxed text-ink-muted">
-            Keamanan adalah tanggung jawab bersama. Kami menjaga sistem, dan
-            kamu membantu menjaga akun dengan kebiasaan yang aman.
-          </p>
-        </div>
-      </section>
-
-      <section className="mt-10">
-        <h2 className="label-mono">Perlindungan dari kami</h2>
-        <div className="mt-4 grid grid-cols-1 divide-y divide-line border-y border-line sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-4">
-          {protections.map((item, index) => {
-            const Icon = item.icon;
-            return (
-              <div key={item.title} className="py-5 sm:px-5 sm:first:pl-0">
-                <div className="flex items-baseline justify-between">
-                  <Icon
-                    className="h-4 w-4 text-ink-soft"
-                    strokeWidth={1.5}
-                    aria-hidden="true"
-                  />
-                  <span className="num text-[10px] text-ink-soft">
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
-                </div>
-                <h3 className="mt-3 text-[13px] font-semibold">{item.title}</h3>
-                <p className="mt-1 max-w-[30ch] text-[12px] leading-relaxed text-ink-muted">
-                  {item.text}
-                </p>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12">
-        <div className="lg:col-span-7">
-          <h2 className="flex items-center gap-2 text-xl font-bold tracking-[-0.02em]">
-            <Smartphone
-              className="h-4 w-4 text-ink-soft"
-              strokeWidth={1.5}
-              aria-hidden="true"
-            />
-            Tips menjaga akun
-          </h2>
-          <ul className="mt-4 divide-y divide-line border-t border-line">
-            {tips.map((tip, index) => (
-              <li
-                key={tip}
-                className="flex items-start gap-3 py-3.5 text-[13px] leading-relaxed text-ink-muted"
-              >
-                <span className="num mt-0.5 w-4 shrink-0 text-[10px] text-ink-soft">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                {tip}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <aside className="lg:col-span-5">
-          <div className="border-l-2 border-red-700 bg-red-50 px-5 py-4">
-            <p className="flex items-center gap-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-red-900">
-              <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" />
-              Melaporkan penipuan
-            </p>
-            <p className="mt-2 text-[12.5px] leading-relaxed text-red-900/80">
-              Jika kamu menerima permintaan mencurigakan atau mengalami
-              penipuan, segera hubungi kami dengan menyertakan tangkapan layar
-              dan nomor pesanan.
-            </p>
-            <Link
-              href="/contact"
-              className="mt-3 inline-flex text-[12px] font-semibold text-red-900 underline underline-offset-4"
-            >
-              Laporkan sekarang
+    <div className="bg-gray-50/60">
+      <section className="relative overflow-hidden border-b border-gray-100 bg-gradient-to-br from-primary-50 via-white to-indigo-50">
+        <div
+          className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-primary-200/40 blur-3xl"
+          aria-hidden="true"
+        />
+        <div className="container-page relative py-10 lg:py-14">
+          <nav
+            className="flex items-center gap-1.5 text-xs text-gray-500"
+            aria-label="Breadcrumb"
+          >
+            <Link href="/" className="transition-colors hover:text-primary-600">
+              Beranda
             </Link>
+            <span aria-hidden="true">/</span>
+            <span className="font-medium text-gray-900">Keamanan</span>
+          </nav>
+
+          <div className="mt-6 grid grid-cols-1 items-end gap-8 lg:grid-cols-12">
+            <div className="lg:col-span-7">
+              <p className="eyebrow">Keamanan</p>
+              <h1 className="mt-3 text-balance text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                Belanja tenang, data tetap aman.
+              </h1>
+            </div>
+            <div className="lg:col-span-5">
+              <p className="max-w-[50ch] text-sm leading-relaxed text-gray-600">
+                Keamanan adalah tanggung jawab bersama. Kami menjaga sistem, dan
+                kamu membantu menjaga akun dengan kebiasaan yang aman.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="container-page py-10 lg:py-12">
+        <section>
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="eyebrow">Perlindungan</p>
+              <h2 className="mt-2 text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
+                Yang kami lakukan untuk kamu
+              </h2>
+            </div>
           </div>
 
-          <div className="mt-4 border border-line bg-surface px-5 py-4">
-            <p className="text-[13px] font-semibold">Kami tidak pernah meminta</p>
-            <ul className="mt-2.5 space-y-1.5">
-              {[
-                'Kode OTP atau PIN',
-                'Kata sandi akun',
-                'Transfer ke rekening pribadi',
-                'Unduhan aplikasi tidak resmi',
-              ].map((item) => (
-                <li
-                  key={item}
-                  className="flex items-start gap-2 text-[12px] text-ink-muted"
-                >
-                  <Check
-                    className="mt-0.5 h-3.5 w-3.5 shrink-0 text-ink-soft"
-                    strokeWidth={1.5}
-                    aria-hidden="true"
-                  />
-                  {item}
-                </li>
-              ))}
-            </ul>
+          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {protections.map((item) => {
+              const Icon = item.icon;
+              return (
+                <div key={item.title} className="card card-hover p-5">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-50 text-primary-600">
+                    <Icon className="h-5 w-5" aria-hidden="true" />
+                  </span>
+                  <h3 className="mt-4 text-sm font-semibold text-gray-900">
+                    {item.title}
+                  </h3>
+                  <p className="mt-1.5 text-xs leading-relaxed text-gray-600">
+                    {item.text}
+                  </p>
+                </div>
+              );
+            })}
           </div>
-        </aside>
-      </section>
+        </section>
+
+        <section className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-12">
+          <div className="lg:col-span-7">
+            <div className="card p-5 sm:p-6">
+              <h2 className="flex items-center gap-2 text-lg font-bold tracking-tight text-gray-900">
+                <Smartphone className="h-4 w-4 text-primary-600" aria-hidden="true" />
+                Tips menjaga akun
+              </h2>
+              <ul className="mt-4 divide-y divide-gray-100">
+                {tips.map((tip, index) => (
+                  <li
+                    key={tip}
+                    className="flex items-start gap-3 py-3 text-sm leading-relaxed text-gray-600 first:pt-0 last:pb-0"
+                  >
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary-50 text-[10px] font-bold text-primary-600">
+                      {index + 1}
+                    </span>
+                    {tip}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <aside className="lg:col-span-5">
+            <div className="rounded-xl border-l-4 border-red-500 bg-red-50 px-5 py-4">
+              <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-red-700">
+                <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" />
+                Melaporkan penipuan
+              </p>
+              <p className="mt-2 text-xs leading-relaxed text-red-800">
+                Jika kamu menerima permintaan mencurigakan atau mengalami
+                penipuan, segera hubungi kami dengan menyertakan tangkapan layar
+                dan nomor pesanan.
+              </p>
+              <Link
+                href="/contact"
+                className="mt-3 inline-flex text-xs font-semibold text-red-800 underline underline-offset-4"
+              >
+                Laporkan sekarang
+              </Link>
+            </div>
+
+            <div className="card mt-4 p-5">
+              <p className="text-sm font-semibold text-gray-900">
+                Kami tidak pernah meminta
+              </p>
+              <ul className="mt-3 space-y-2">
+                {[
+                  'Kode OTP atau PIN',
+                  'Kata sandi akun',
+                  'Transfer ke rekening pribadi',
+                  'Unduhan aplikasi tidak resmi',
+                ].map((item) => (
+                  <li
+                    key={item}
+                    className="flex items-start gap-2 text-xs text-gray-600"
+                  >
+                    <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" aria-hidden="true" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </aside>
+        </section>
+      </div>
     </div>
   );
 }

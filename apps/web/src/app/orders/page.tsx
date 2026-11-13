@@ -8,57 +8,65 @@ export const metadata = {
 
 export default function OrdersPage() {
   return (
-    <div className="mx-auto max-w-8xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
-      <nav
-        className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.12em] text-ink-soft"
-        aria-label="Breadcrumb"
-      >
-        <Link href="/" className="transition-colors hover:text-ink">
-          Beranda
-        </Link>
-        <ChevronRight className="h-3 w-3" aria-hidden="true" />
-        <span className="text-ink-muted">Lacak pesanan</span>
-      </nav>
-
-      <div className="mt-6 border-b border-line pb-6">
-        <h1 className="text-3xl font-extrabold tracking-[-0.04em] sm:text-4xl">
-          Pesanan saya
-        </h1>
-        <p className="mt-2 max-w-[52ch] text-[13px] leading-relaxed text-ink-muted">
-          Masukkan nomor pesanan untuk melihat status pengiriman terbaru.
-        </p>
-      </div>
-
-      <div className="mt-8">
-        <OrderTracker />
-      </div>
-
-      <div className="mt-12 grid grid-cols-1 divide-y divide-line border-y border-line sm:grid-cols-2 sm:divide-x sm:divide-y-0">
-        <div className="py-5 sm:pr-8">
-          <p className="text-[13px] font-semibold">Riwayat pesanan ada di akun</p>
-          <p className="mt-1 max-w-[42ch] text-[12.5px] leading-relaxed text-ink-muted">
-            Masuk untuk melihat semua pesanan, alamat tersimpan, dan status
-            pengiriman tanpa mengetik nomor pesanan.
-          </p>
-          <Link
-            href="/auth/login"
-            className="mt-3 inline-flex items-center gap-1.5 text-[12px] font-semibold text-ink underline decoration-line underline-offset-4 hover:decoration-ink"
-          >
-            Masuk ke akun
+    <div className="bg-gray-50/60">
+      <div className="container-page py-7 lg:py-9">
+        <nav
+          className="flex items-center gap-1.5 text-xs text-gray-500"
+          aria-label="Breadcrumb"
+        >
+          <Link href="/" className="transition-colors hover:text-primary-600">
+            Beranda
           </Link>
+          <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+          <span className="font-medium text-gray-900">Lacak pesanan</span>
+        </nav>
+
+        <div className="mt-4">
+          <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+            Pesanan saya
+          </h1>
+          <p className="mt-1.5 max-w-[52ch] text-sm leading-relaxed text-gray-600">
+            Masukkan nomor pesanan untuk melihat status pengiriman terbaru.
+          </p>
         </div>
-        <div className="py-5 sm:pl-8">
-          <p className="text-[13px] font-semibold">Nomor pesanan hilang?</p>
-          <p className="mt-1 max-w-[42ch] text-[12.5px] leading-relaxed text-ink-muted">
-            Cek email konfirmasi atau hubungi tim bantuan dengan menyertakan
-            email dan tanggal transaksi.
-          </p>
-          <Link
-            href="/contact"
-            className="mt-3 inline-flex items-center gap-1.5 text-[12px] font-semibold text-ink underline decoration-line underline-offset-4 hover:decoration-ink"
-          >
-            Hubungi bantuan
-          </Link>
+
+        <div className="mt-6">
+          <OrderTracker />
+        </div>
+
+        <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="card p-5">
+            <p className="text-sm font-semibold text-gray-900">
+              Riwayat pesanan ada di akun
+            </p>
+            <p className="mt-1 text-xs leading-relaxed text-gray-600">
+              Masuk untuk melihat semua pesanan, alamat tersimpan, dan status
+              pengiriman tanpa mengetik nomor pesanan.
+            </p>
+            <Link
+              href="/auth/login"
+              className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-primary-600 hover:text-primary-700"
+            >
+              Masuk ke akun
+              <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+            </Link>
+          </div>
+          <div className="card p-5">
+            <p className="text-sm font-semibold text-gray-900">
+              Nomor pesanan hilang?
+            </p>
+            <p className="mt-1 text-xs leading-relaxed text-gray-600">
+              Cek email konfirmasi atau hubungi tim bantuan dengan menyertakan
+              email dan tanggal transaksi.
+            </p>
+            <Link
+              href="/contact"
+              className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-primary-600 hover:text-primary-700"
+            >
+              Hubungi bantuan
+              <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+            </Link>
+          </div>
         </div>
       </div>
     </div>
