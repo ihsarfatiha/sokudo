@@ -86,15 +86,15 @@ Catatan: Render free tier tidur setelah idle, jadi request pertama bisa lambat 3
 ## 3. Storefront (Vercel)
 
 1. **Add New Project**, pilih repository yang sama.
-2. **Root Directory** → `apps/web`. Ini wajib, karena `apps/web/vercel.json` memakai path relatif ke root repo.
+2. **Root Directory** → `apps/web`. Aplikasi web berdiri sendiri (tidak mengimpor paket workspace), jadi folder ini cukup.
 3. Framework terdeteksi otomatis **Next.js**. Build & install command diambil dari `vercel.json`:
 
    ```json
-   "installCommand": "cd ../.. && npm ci",
-   "buildCommand": "cd ../.. && npm run build --workspace=apps/web"
+   "installCommand": "npm install",
+   "buildCommand": "npm run build"
    ```
 
-   Perintah dijalankan dari `apps/web`, lalu `cd ../..` masuk ke root monorepo. Output build (`.next`) tetap di `apps/web`.
+   Perintah dijalankan dari `apps/web`. Output build (`.next`) juga di `apps/web`.
 
 4. Environment variables (Production + Preview):
 
@@ -105,7 +105,17 @@ Catatan: Render free tier tidur setelah idle, jadi request pertama bisa lambat 3
 
 5. Deploy.
 
-Kalau build gagal dengan pesan workspace/`node_modules` tidak ditemukan, buka **Settings → General → Root Directory** lalu aktifkan opsi untuk menyertakan file di luar root directory (dukungan monorepo).
+Kalau build gagal, pastikan **Root Directory** benar-benar diatur ke `apps/web`, bukan root repo. Folder `apps/web` tidak membutuhkan file dari luar root directory.
+
+Alternatif lewat CLI (tanpa Git integration):
+
+```bash
+cd apps/web
+npx vercel link --yes --project sokudo
+npx vercel deploy --prod --yes
+```
+
+Deploy CLI tidak otomatis ter-update saat push; jalankan `vercel deploy --prod` lagi setiap ada perubahan.
 
 ---
 
